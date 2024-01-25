@@ -8,7 +8,7 @@
 bool gtRun( const char *commandLine )
 {
    const int commandBufferSize = 512;
-   const int commandPrefixMaxSize = 10; // for "xdg-open ", "start ", "open "
+   const int commandPrefixMaxSize = 10;
 
    if( strlen( commandLine ) > ( commandBufferSize - commandPrefixMaxSize - 1 ) )
    {
@@ -23,9 +23,7 @@ bool gtRun( const char *commandLine )
 #elif defined( __APPLE__ ) || defined( __MACH__ )
    snprintf( command, sizeof( command ), "open %s", commandLine );
 #elif defined( __linux__ )
-   //snprintf( command, sizeof( command ), "./%s", commandLine );
    snprintf( command, sizeof( command ), "%s", commandLine );
-
 #else
    fprintf( stderr, "Unsupported platform\n" );
    return F;
