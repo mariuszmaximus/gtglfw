@@ -4,9 +4,9 @@
 
 #include "gtglfw.h"
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
-bool gtopenURL( const char *url )
+bool gtOpenURL( const char *url )
 {
-   const int commandBufferSize = 256;
+   const int commandBufferSize = 512;
    const int commandPrefixMaxSize = 10; // for "xdg-open ", "start ", "open "
 
    if( strlen( url ) > ( commandBufferSize - commandPrefixMaxSize - 1 ) )
@@ -39,7 +39,7 @@ bool gtopenURL( const char *url )
    return T;
 }
 
-bool gtopenEmailClient( const char *emailAddress )
+bool gtOpenEmailClient( const char *emailAddress )
 {
    const int commandBufferSize = 256;
    const int commandPrefixMaxSize = 10; // for "xdg-open ", "start ", "open "

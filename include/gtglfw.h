@@ -216,8 +216,8 @@ void        gtFreeDirectory( FileInfo *pFiles );
 const char *gtPathSeparator( void );
 
 // http_functions.c
-bool gtopenURL( const char *url );
-bool gtopenEmailClient( const char *emailAddress );
+bool gtOpenURL( const char *url );
+bool gtOpenEmailClient( const char *emailAddress );
 
 // menu.c
 Menu    *gtMenuNew( App *pApp );
@@ -242,6 +242,32 @@ void gtRectWidthToInside( int x, int y, int width, int height, int lineWidth, un
 void gtRectWidthToCenter( int x, int y, int width, int height, int numberLines, unsigned int color );
 void gtRectWidthToOutside( int x, int y, int width, int height, int numberLines, unsigned int color );
 void gtFillgtRect( int x, int y, int width, int height, unsigned int color );
+
+// statements_functions.c
+/**
+ * Executes a system command or opens files based on the provided command line string.
+ *
+ * The `gtRun` function is used to execute system commands, open URLs, or run executable files
+ * using the system's default handlers or command-line interfaces. It determines the
+ * appropriate command format based on the operating system and appends the provided
+ * `commandLine` argument to it. This function is designed to be cross-platform,
+ * supporting Windows, macOS, and Linux.
+ *
+ * Usage of the `system` function presents potential security risks, especially if
+ * `commandLine` includes user-supplied data. Ensure that inputs are validated and sanitized.
+ *
+ * @param commandLine The command, URL, or file path to be executed or opened. This should be specified
+ *                    either as a literal or as a character string.
+ * @return Returns `true` if the command was executed successfully, `false` otherwise.
+ *
+ * Example:
+ * bool success = gtRun("https://www.example.com"); // Opens a URL
+ * bool executed = gtRun("/path/to/executable");    // Executes an executable file
+ *
+ * Note: The function uses predefined buffer sizes and command prefixes for different
+ * platforms. Ensure the total command length does not exceed these limits.
+ */
+bool gtRun( const char *commandLine );
 
 // text.c
 void gtDrawText( int x, int y, const char *text, unsigned int foreground );

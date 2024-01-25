@@ -7,7 +7,7 @@
 void myOnClickFunction()
 {
    printf( "Button was clicked!\n" );
-   gtopenURL( "https://github.com/dev-harbour/gtglfw" );
+   gtOpenURL( "https://github.com/dev-harbour/gtglfw" );
 }
 
 int main()

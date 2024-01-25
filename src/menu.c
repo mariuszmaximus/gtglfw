@@ -4,7 +4,7 @@
 
 #include "gtglfw.h"
 
-//* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
+/* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 static bool is_point_inside_menu_bar( MenuBar *pMenuBar, int x, int y )
 {
    return x >= pMenuBar->x && x <= ( pMenuBar->x + pMenuBar->width ) && y >= pMenuBar->y && y <= ( pMenuBar->y + pMenuBar->height );
