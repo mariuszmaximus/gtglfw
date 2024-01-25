@@ -174,7 +174,27 @@ void    gtFreeButton( Button *pButton );
 
 // character_functions.c
 const char *gtAddStr( const char *firstStr, ... );
+
+/**
+ * Returns the position of the first occurrence of a substring in a string.
+ *
+ * The `gtAt` function searches a given string (`target`) to find the first
+ * occurrence of a specified substring (`search`). It returns the position
+ * of the substring in the string, starting the indexing from 1. If the substring
+ * is not found, the function returns 0.
+ *
+ * @param search The substring whose position is to be found.
+ * @param target The string in which to search for the substring.
+ * @return The position of the first occurrence of the substring in the string, starting from 1.
+ *         Returns 0 if the substring is not found.
+ *
+ * Usage examples:
+ * gtAt("a", "abcde") returns 1.
+ * gtAt("bcd", "abcde") returns 2.
+ * gtAt("a", "bcde") returns 0.
+ */
 int         gtAt( const char *search, const char *target );
+
 const char *gtPadL( const char *str, int length );
 const char *gtPadC( const char *str, int length );
 const char *gtPadR( const char *str, int length );

@@ -12,6 +12,7 @@ static size_t gt_strnlen( const char *s, size_t maxlen )
    return len;
 }
 
+/* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 const char *gtAddStr( const char *firstStr, ... )
 {
    static char result[ 512 ];
