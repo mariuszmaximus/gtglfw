@@ -143,6 +143,11 @@ static Panel *PanelInit( App *pApp )
    memset( pPanel, 0, sizeof( Panel ) );
    pPanel->pApp = pApp;
 
+   pPanel->isFirstDirectory  = T;
+   pPanel->isHiddenDirectory = F;
+   pPanel->isFirstFile       = F;
+   pPanel->isHiddenFile      = F;
+
    return pPanel;
 }
 
@@ -172,6 +177,40 @@ static void PanelFetchList( Panel *pPanel, const char *currentDir )
       pPanel->currentDir[ sizeof( pPanel->currentDir ) - 1 ] = '\0';
    }
    pPanel->pFiles = gtDirectory( pPanel->currentDir, &pPanel->nFilesCount );
+
+   if( pPanel->isFirstDirectory )
+   {
+      qsort( pPanel->pFiles, pPanel->nFilesCount, sizeof( FileInfo ), CompareFiles );
+   }
+}
+
+int CompareFiles( const void *a, const void *b )
+{
+   FileInfo *fileA = ( FileInfo * ) a;
+   FileInfo *fileB = ( FileInfo * ) b;
+
+   // The ".." Directory always comes first
+   if( strcmp( fileA->name, ".." ) == 0 ) return -1;
+   if( strcmp( fileB->name, ".." ) == 0 ) return 1;
+
+   // Directories before files
+   bool isDirA = strchr( fileA->attr, 'D' ) != NULL;
+   bool isDirB = strchr( fileB->attr, 'D' ) != NULL;
+   if( isDirA != isDirB )
+   {
+      return IIF( isDirA, -1, 1 );
+   }
+
+   // Hidden files/directories after regular ones
+   bool isHiddenA = strchr( fileA->attr, 'H' ) != NULL;
+   bool isHiddenB = strchr( fileB->attr, 'H' ) != NULL;
+   if( isHiddenA != isHiddenB )
+   {
+      return isHiddenA ? 1 : -1;
+      return IIF( isHiddenA, 1, -1 );
+   }
+
+   return strcmp( fileA->name, fileB->name );
 }
 
 static void Autosize( App *pApp )
@@ -286,7 +325,6 @@ static void UpdatePanelFetchList( Panel *pPanel, const char *newDir )
    pPanel->currentDir[ sizeof( pPanel->currentDir ) - 1 ] = '\0';
    PanelFetchList( pPanel, newDir );
 }
-
 
 static int DirIndexName( Panel *pPanel, const char *tmpDir )
 {

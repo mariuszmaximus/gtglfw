@@ -22,11 +22,17 @@ struct _Panel
    const char *cmdLine;
    int         cmdCol;
    int         cmdColNo;
+
+   bool        isFirstDirectory;
+   bool        isHiddenDirectory;
+   bool        isFirstFile;
+   bool        isHiddenFile;
 };
 
 static Panel *PanelInit( App *pApp );
 static void   PanelFree( Panel *pPanel );
 static void   PanelFetchList( Panel *pPanel, const char *currentDir );
+static int    CompareFiles( const void *a, const void *b );
 static void   UpdatePanelFetchList( Panel *pPanel, const char *newDir );
 static void   Autosize( App *pApp );
 static void   Resize( Panel *pPanel, int col, int row, int maxCol, int maxRow );
