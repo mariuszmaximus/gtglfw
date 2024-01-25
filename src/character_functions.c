@@ -14,7 +14,7 @@ static size_t gt_strnlen( const char *s, size_t maxlen )
 
 const char *gtAddStr( const char *firstStr, ... )
 {
-   static char result[ 1024 ];
+   static char result[ 512 ];
    va_list args;
    va_start( args, firstStr );
 
@@ -42,6 +42,16 @@ const char *gtAddStr( const char *firstStr, ... )
 
    va_end( args );
    return result;
+}
+
+int gtAt( const char *search, const char *target )
+{
+   char *occurrence = strstr( target, search );
+   if( occurrence == NULL )
+   {
+      return 0;
+   }
+   return ( int )( occurrence - target + 1 );
 }
 
 const char *gtPadL( const char *str, int length )

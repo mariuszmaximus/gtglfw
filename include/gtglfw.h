@@ -174,6 +174,7 @@ void    gtFreeButton( Button *pButton );
 
 // character_functions.c
 const char *gtAddStr( const char *firstStr, ... );
+int         gtAt( const char *search, const char *target );
 const char *gtPadL( const char *str, int length );
 const char *gtPadC( const char *str, int length );
 const char *gtPadR( const char *str, int length );

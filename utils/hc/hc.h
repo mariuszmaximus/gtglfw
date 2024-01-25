@@ -27,6 +27,7 @@ struct _Panel
 static Panel *PanelInit( App *pApp );
 static void   PanelFree( Panel *pPanel );
 static void   PanelFetchList( Panel *pPanel, const char *currentDir );
+static void   UpdatePanelFetchList( Panel *pPanel, const char *newDir );
 static void   Autosize( App *pApp );
 static void   Resize( Panel *pPanel, int col, int row, int maxCol, int maxRow );
 static void   DrawPanel( Panel *pPanel );

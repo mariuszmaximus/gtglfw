@@ -43,7 +43,16 @@ int main()
 
             case GLFW_KEY_ENTER:
 
-               ChangeDir( activePanel );
+               int index = activePanel->rowBar + activePanel->rowNo;
+               if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
+               {
+                  
+               }
+               else
+               {
+                  ChangeDir( activePanel );
+               }
+
                app->keyAction = GLFW_RELEASE;
                break;
 
@@ -109,7 +118,7 @@ int main()
             }
          }
 
-      PrintPanelStructure( activePanel );
+      //PrintPanelStructure( activePanel );
 
       ENDDRAWING( app );
       gtWaitEvents();
@@ -167,8 +176,8 @@ static void PanelFetchList( Panel *pPanel, const char *currentDir )
 
 static void Autosize( App *pApp )
 {
-   Resize( leftPanel, 0, 0, gtMaxCol( pApp ) / 2, gtMaxRow( pApp ) - 2 );
-   Resize( rightPanel, gtMaxCol( pApp ) / 2, 0, gtMaxCol( pApp ) / 2, gtMaxRow( pApp ) - 2 );
+   Resize( leftPanel, 0, 0, gtMaxCol( pApp ) / 2, gtMaxRow( pApp ) - 1 );
+   Resize( rightPanel, gtMaxCol( pApp ) / 2, 0, gtMaxCol( pApp ) / 2, gtMaxRow( pApp ) - 1 );
 }
 
 static void Resize( Panel *pPanel, int col, int row, int maxCol, int maxRow )
@@ -247,9 +256,7 @@ static void ChangeDir( Panel *pPanel )
       const char *tmpDir = gtDirLastName( pPanel->currentDir );
       newDir = gtDirDeleteLastPath( pPanel->currentDir );
 
-      strncpy( pPanel->currentDir, newDir, sizeof( pPanel->currentDir ) - 1 );
-      pPanel->currentDir[ sizeof( pPanel->currentDir ) - 1 ] = '\0';
-      PanelFetchList( pPanel, newDir );
+      UpdatePanelFetchList( pPanel, newDir );
 
       int lastPosition = MAX( DirIndexName( pPanel, tmpDir ), 1 ) ;
       if( lastPosition > activePanel->maxRow - 3 )
@@ -269,11 +276,17 @@ static void ChangeDir( Panel *pPanel )
       pPanel->rowBar = 0;
       pPanel->rowNo  = 0;
 
-      strncpy( pPanel->currentDir, newDir, sizeof( pPanel->currentDir ) - 1 );
-      pPanel->currentDir[ sizeof( pPanel->currentDir ) - 1 ] = '\0';
-      PanelFetchList( pPanel, newDir );
+      UpdatePanelFetchList( pPanel, newDir );
    }
 }
+
+static void UpdatePanelFetchList( Panel *pPanel, const char *newDir )
+{
+   strncpy( pPanel->currentDir, newDir, sizeof( pPanel->currentDir ) - 1 );
+   pPanel->currentDir[ sizeof( pPanel->currentDir ) - 1 ] = '\0';
+   PanelFetchList( pPanel, newDir );
+}
+
 
 static int DirIndexName( Panel *pPanel, const char *tmpDir )
 {
