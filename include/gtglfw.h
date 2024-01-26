@@ -198,6 +198,7 @@ int         gtAt( const char *search, const char *target );
 const char *gtPadL( const char *str, int length );
 const char *gtPadC( const char *str, int length );
 const char *gtPadR( const char *str, int length );
+const char *gtSpace( int count );
 const char *gtSubStr( const char *str, int start, int count );
 const char *gtLeft( const char *str, int count );
 const char *gtRight( const char *str, int count );

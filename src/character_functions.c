@@ -71,7 +71,7 @@ const char *gtPadL( const char *str, int length )
     {
       int padding = length - len;
       memset( result, ' ', padding );
-      int copyLen = byteLen > ( 511 - padding) ? ( 511 - padding) : byteLen;
+      int copyLen = byteLen > ( 511 - padding) ? ( 511 - padding ) : byteLen;
       memcpy( result + padding, str, copyLen );
       result[ padding + copyLen ] = '\0';
    }
@@ -129,6 +129,25 @@ const char *gtPadR( const char *str, int length )
 
    return result;
 }
+
+const char *gtSpace(int count) {
+    static char result[512];
+
+    if (count >= (int)sizeof(result)) {
+        count = sizeof(result) - 1;
+    }
+
+    if (count <= 0) {
+        result[0] = '\0';
+        return result;
+    }
+
+    memset(result, ' ', count);
+    result[count] = '\0';
+
+    return result;
+}
+
 
 const char *gtSubStr( const char *str, int start, int count )
 {
