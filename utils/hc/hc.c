@@ -230,6 +230,11 @@ static void Resize( Panel *pPanel, int col, int row, int maxCol, int maxRow )
 static void DrawPanel( Panel *pPanel )
 {
    int row, i = 0;
+   int longestName = 4;
+   int longestSize = 0;
+
+   longestName = MAX( longestName, FindLongestName( pPanel ) );
+   longestSize = MAX( longestSize, FindLongestSize( pPanel ) );
 
    if( activePanel == pPanel )
    {
@@ -246,7 +251,10 @@ static void DrawPanel( Panel *pPanel )
       if( i < pPanel->nFilesCount )
       {
          gtDispOutAt( pPanel->col + 1, row,
-            gtPadR( PaddedString( pPanel->pFiles[ i ].name ), pPanel->maxCol - 2 ),
+            gtPadR( PaddedString( longestName, longestSize,
+               pPanel->pFiles[ i ].name,
+               pPanel->pFiles[ i ].size,
+               pPanel->pFiles[ i ].attr ), pPanel->maxCol - 2 ),
             IIF( activePanel == pPanel && i == pPanel->rowBar + pPanel->rowNo, "000000/00FF00", "EAEAEA/000000" ) );
          ++i;
       }
@@ -257,23 +265,42 @@ static void DrawPanel( Panel *pPanel )
    }
 }
 
-static const char *PaddedString( const char *name )
+static const char *PaddedString( int longestName, int longestSize, const char *name, const char *size, const char *attr )
 {
    static char fileName[ 512 ];
+   static char fileSize[ 20 ];
 
    if( strcmp( name, ".." ) == 0 )
    {
-      const char *tempStr = gtAddStr( "[", name, "]", NULL );
-      strncpy( fileName, tempStr, sizeof( fileName ) - 1 );
-      fileName[ sizeof( fileName ) - 1 ] = '\0';
+      const char *tempStr = gtPadR( gtAddStr( "[", name, "]", NULL ), longestName );
+      SafeStrCopy( fileName, tempStr, sizeof( fileName ) );
    }
    else
    {
-      strncpy( fileName, name, sizeof( fileName ) - 1 );
-      fileName[ sizeof( fileName ) - 1 ] = '\0';
+      const char *tempStr = gtPadR( name, longestName );
+      SafeStrCopy( fileName, tempStr, sizeof( fileName ) );
    }
 
-   return fileName;
+   if( strchr(attr, 'D' ) != NULL )
+   {
+      const char *tempStr = gtPadL( "DIR", longestSize );
+      SafeStrCopy( fileSize, tempStr, sizeof( fileSize ) );
+   }
+   else
+   {
+      const char *tempStr = gtPadL( size, longestSize );
+      SafeStrCopy( fileSize, tempStr, sizeof( fileSize ) );
+   }
+
+   return gtAddStr( fileName, "   ", fileSize, NULL );
+}
+
+void SafeStrCopy( char *dest, const char *src, size_t destSize )
+{
+   if( destSize == 0 ) return;
+
+   strncpy( dest, src, destSize - 1 );
+   dest[ destSize - 1 ] = '\0';
 }
 
 static void DrawComdLine( App *pApp, Panel *pPanel )
@@ -336,6 +363,38 @@ static int DirIndexName( Panel *pPanel, const char *tmpDir )
       }
    }
    return -1;
+}
+
+static int FindLongestName( Panel *pPanel )
+{
+   int longestName = 0;
+
+   for( int i = 0; i < pPanel->nFilesCount; i++ )
+   {
+      int currentNameLength = strlen( pPanel->pFiles[ i ].name );
+      if( currentNameLength > longestName )
+      {
+         longestName = currentNameLength;
+      }
+   }
+
+   return longestName;
+}
+
+static int FindLongestSize( Panel *pPanel )
+{
+   int longestSize = 0;
+
+   for( int i = 0; i < pPanel->nFilesCount; i++ )
+   {
+      int currentSizeLength = strlen( pPanel->pFiles[ i ].size );
+      if( currentSizeLength > longestSize )
+      {
+         longestSize = currentSizeLength;
+      }
+   }
+
+   return longestSize;
 }
 
 static void PrintPanelStructure( const Panel *pPanel )

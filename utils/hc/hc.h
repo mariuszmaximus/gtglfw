@@ -37,10 +37,13 @@ static void   UpdatePanelFetchList( Panel *pPanel, const char *newDir );
 static void   Autosize( App *pApp );
 static void   Resize( Panel *pPanel, int col, int row, int maxCol, int maxRow );
 static void   DrawPanel( Panel *pPanel );
-static const char *PaddedString( const char *name );
+static const char *PaddedString( int longestName, int longestSize, const char *name, const char *size, const char *attr );
+static void   SafeStrCopy( char *dest, const char *src, size_t destSize );
 static void   DrawComdLine( App *pApp, Panel *pPanel );
 static void   ChangeDir( Panel *pPanel );
 static int    DirIndexName( Panel *pPanel, const char *tmpDir );
+static int    FindLongestName( Panel *pPanel );
+static int    FindLongestSize( Panel *pPanel );
 static void   PrintPanelStructure( const Panel *pPanel );
 
 #define IIF( condition, trueValue, falseValue ) ( ( condition ) ? ( trueValue ) : ( falseValue ) )
