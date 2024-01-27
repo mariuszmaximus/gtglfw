@@ -251,9 +251,11 @@ static void DrawPanel( Panel *pPanel )
       if( i < pPanel->nFilesCount )
       {
          gtDispOutAt( pPanel->col + 1, row,
-            gtPadR( PaddedString( longestName, longestSize,
+            gtPadR( PaddedString( pPanel, longestName, longestSize,
                pPanel->pFiles[ i ].name,
                pPanel->pFiles[ i ].size,
+               pPanel->pFiles[ i ].date,
+               pPanel->pFiles[ i ].time,
                pPanel->pFiles[ i ].attr ), pPanel->maxCol - 2 ),
             IIF( activePanel == pPanel && i == pPanel->rowBar + pPanel->rowNo, "000000/00FF00", "EAEAEA/000000" ) );
          ++i;
@@ -265,34 +267,49 @@ static void DrawPanel( Panel *pPanel )
    }
 }
 
-static const char *PaddedString( int longestName, int longestSize, const char *name, const char *size, const char *attr )
+static const char *PaddedString( Panel *pPanel, int longestName, int longestSize, const char *name, const char *size, const char *date, const char *time, const char *attr )
 {
-   static char fileName[ 512 ];
-   static char fileSize[ 20 ];
+   static char formattedLine[ 512 ];
+   char fileName[ longestName + 1 ];
+   char fileSize[ longestSize + 4 + 1 ];
+   char fileDate[ 11 ];
+   char fileTime[ 6 ];
+   char fileAttr[ 4 ];
 
    if( strcmp( name, ".." ) == 0 )
    {
-      const char *tempStr = gtPadR( gtAddStr( "[", name, "]", NULL ), longestName );
-      SafeStrCopy( fileName, tempStr, sizeof( fileName ) );
+      SafeStrCopy( fileName, gtPadR( gtAddStr( "[", name, "]", NULL ), longestName ), sizeof( fileName ) );
    }
    else
    {
-      const char *tempStr = gtPadR( name, longestName );
-      SafeStrCopy( fileName, tempStr, sizeof( fileName ) );
+      SafeStrCopy( fileName, gtPadR( name, longestName ), sizeof( fileName ) );
    }
 
-   if( strchr(attr, 'D' ) != NULL )
+   if( strchr( attr, 'D' ) != NULL )
    {
-      const char *tempStr = gtPadL( "DIR", longestSize );
-      SafeStrCopy( fileSize, tempStr, sizeof( fileSize ) );
+      SafeStrCopy( fileSize, gtPadL( "DIR", longestSize ), sizeof( fileSize ) );
    }
    else
    {
-      const char *tempStr = gtPadL( size, longestSize );
-      SafeStrCopy( fileSize, tempStr, sizeof( fileSize ) );
+      SafeStrCopy( fileSize, gtPadL( gtStrFormat( size, "9 999" ), longestSize ), sizeof( fileSize ) );
    }
 
-   return gtAddStr( fileName, "   ", fileSize, NULL );
+   SafeStrCopy( fileAttr, gtPadL( attr, 3 ), sizeof( fileAttr ) );
+
+   SafeStrCopy( fileSize + strlen( fileSize ), fileAttr, sizeof( fileSize ) - strlen( fileSize ) );
+
+   SafeStrCopy( fileDate, gtPadR( date, 10 ), sizeof( fileDate ) );
+
+   SafeStrCopy( fileTime, gtPadR( time, 5 ), sizeof( fileTime ) );
+
+   // Adding the appropriate number of spaces between fileName and fileSize
+   int spacesNeeded = pPanel->maxCol - strlen( fileName ) - strlen( fileSize ) - strlen( fileDate ) - strlen( fileTime ) - 4; // - 4for margins
+   if( spacesNeeded < 0 ) spacesNeeded = 0;
+
+   // Combining everything in one sequence
+   snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s", fileName, spacesNeeded, "", fileSize, fileDate, fileTime );
+
+   return formattedLine;
 }
 
 void SafeStrCopy( char *dest, const char *src, size_t destSize )
