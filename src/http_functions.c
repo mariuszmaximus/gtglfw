@@ -9,7 +9,7 @@ bool gtOpenURL( const char *url )
    const int commandBufferSize = 512;
    const int commandPrefixMaxSize = 10; // for "xdg-open ", "start ", "open "
 
-   if( strlen( url ) > ( commandBufferSize - commandPrefixMaxSize - 1 ) )
+   if( strlen( url ) > ( commandBufferSize - commandPrefixMaxSize -1 ) )
    {
       fprintf( stderr, "URL is too long\n" );
       return F;
@@ -44,7 +44,7 @@ bool gtOpenEmailClient( const char *emailAddress )
    const int commandBufferSize = 256;
    const int commandPrefixMaxSize = 10; // for "xdg-open ", "start ", "open "
 
-   if( strlen( emailAddress ) > ( commandBufferSize - commandPrefixMaxSize - 1 ) )
+   if( strlen( emailAddress ) > ( commandBufferSize - commandPrefixMaxSize -1 ) )
    {
       fprintf( stderr, "Email address is too long\n" );
       return F;

@@ -25,7 +25,7 @@ const char *gtAddStr( const char *firstStr, ... )
    const char *str = firstStr;
    while( str != NULL )
    {
-      size_t spaceLeft = sizeof( result ) - currentLength - 1;
+      size_t spaceLeft = sizeof( result ) - currentLength -1;
       size_t strLength = gt_strnlen( str, spaceLeft );
 
       if( strLength < spaceLeft )
@@ -134,7 +134,7 @@ const char *gtSpace(int count) {
     static char result[512];
 
     if (count >= (int)sizeof(result)) {
-        count = sizeof(result) - 1;
+        count = sizeof(result) -1;
     }
 
     if (count <= 0) {
@@ -153,9 +153,9 @@ const char *gtStrFormat( const char *str, const char *strTemplate )
    static char result[ 512 ];
    int lenStr = strlen( str );
    int lenTemplate = strlen( strTemplate );
-   int j = lenStr - 1;
+   int j = lenStr -1;
 
-   for( int i = lenTemplate - 1; i >= 0; i-- )
+   for( int i = lenTemplate -1; i >= 0; i-- )
    {
       if( strTemplate[ i ] == '9' )
       {

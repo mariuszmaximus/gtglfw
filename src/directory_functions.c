@@ -65,8 +65,8 @@ const char *gtDirDeleteLastPath( const char *path )
    static char result[ 512 ];
    char *lastPath;
 
-   strncpy( result, path, sizeof( result ) - 1 );
-   result[ sizeof( result ) - 1 ] = '\0';
+   strncpy( result, path, sizeof( result ) -1 );
+   result[ sizeof( result ) -1 ] = '\0';
 
    char separator = gtPathSeparator()[0];
 
@@ -103,16 +103,16 @@ const char *gtDirLastName( const char *path )
 
    char separator = gtPathSeparator()[ 0 ];
 
-   if( path[ pathLength - 1 ] == separator )
+   if( path[ pathLength -1 ] == separator )
    {
       pathLength--;
    }
 
-   for( int i = pathLength - 1; i >= 0; i-- )
+   for( int i = pathLength -1; i >= 0; i-- )
    {
       if( path[ i ] == separator )
       {
-         int length = pathLength - i - 1;
+         int length = pathLength - i -1;
          strncpy( result, path + i + 1, length );
          result[ length ] = '\0';
          return result;
@@ -136,7 +136,7 @@ const char *gtGetCurDir()
       char separator = gtPathSeparator()[0];
 
       // Checking if there is already a separator at the end of the path
-      if( result[ len - 1 ] != separator )
+      if( result[ len -1 ] != separator )
       {
          if( len < ( sizeof( result ) - 2 ) )
          {
@@ -164,7 +164,7 @@ struct tm ConvertSystemTimeToTm( const SYSTEMTIME *st )
    struct tm tm;
    memset( &tm, 0, sizeof( tm ) );
    tm.tm_year = st->wYear - 1900; // Years since 1900
-   tm.tm_mon  = st->wMonth - 1;   // The months are from 0 to 11
+   tm.tm_mon  = st->wMonth -1;   // The months are from 0 to 11
    tm.tm_mday = st->wDay;
    tm.tm_hour = st->wHour;
    tm.tm_min  = st->wMinute;
@@ -206,8 +206,8 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
                parentIndex = count;
             }
 
-            strncpy( pFiles[ count ].name, findFileData.cFileName, sizeof( pFiles[ count ].name ) - 1 );
-            pFiles[ count ].name[ sizeof( pFiles[ count ].name ) - 1 ] = '\0';
+            strncpy( pFiles[ count ].name, findFileData.cFileName, sizeof( pFiles[ count ].name ) -1 );
+            pFiles[ count ].name[ sizeof( pFiles[ count ].name ) -1 ] = '\0';
 
             // Setting the file size
             LARGE_INTEGER fileSize;
@@ -289,8 +289,8 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
             return NULL;
          }
 
-         strncpy( pFiles[ count ].name, entry->d_name, sizeof( pFiles[ count ].name ) - 1 );
-         pFiles[ count ].name[ sizeof( pFiles[ count ].name ) - 1 ] = '\0';
+         strncpy( pFiles[ count ].name, entry->d_name, sizeof( pFiles[ count ].name ) -1 );
+         pFiles[ count ].name[ sizeof( pFiles[ count ].name ) -1 ] = '\0';
 
          snprintf( pFiles[ count ].size, sizeof( pFiles[ count ].size ), "%ld", fileInfo.st_size );
 

@@ -61,7 +61,7 @@ void gtRect( int x, int y, int width, int height, unsigned int color )
       glVertex2i( x + 1, y );
       glVertex2i( x + width, y );
       glVertex2i( x + width, y + height );
-      glVertex2i( x, y + height - 1);
+      glVertex2i( x, y + height -1 );
    glEnd();
 }
 
@@ -119,7 +119,7 @@ void gtRectWidthToCenter( int x, int y, int width, int height, int numberLines, 
       // Right
       gtLine( x + width + i, y - i, 0, height + i * 2, color );
       // Bottom
-      gtLine( x - 1 - i, y + height + i, width + 1 + i * 2, 0, color );
+      gtLine( x -1 - i, y + height + i, width + 1 + i * 2, 0, color );
       // Left
       gtLine( x - i, y - i, 0, height + i * 2, color );
    }
@@ -141,7 +141,7 @@ void gtRectWidthToOutside( int x, int y, int width, int height, int numberLines,
       // Right
       gtLine( x + width + i, y - i, 0, height + i * 2, color );
       // Bottom
-      gtLine( x - 1 - i, y + height + i, width + 1 + i * 2, 0, color );
+      gtLine( x -1 - i, y + height + i, width + 1 + i * 2, 0, color );
       // Left
       gtLine( x - i, y - i, 0, height + i * 2, color );
    }

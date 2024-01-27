@@ -10,7 +10,7 @@ bool gtRun( const char *commandLine )
    const int commandBufferSize = 512;
    const int commandPrefixMaxSize = 10;
 
-   if( strlen( commandLine ) > ( commandBufferSize - commandPrefixMaxSize - 1 ) )
+   if( strlen( commandLine ) > ( commandBufferSize - commandPrefixMaxSize -1 ) )
    {
       fprintf( stderr, "Command is too long\n" );
       return F;

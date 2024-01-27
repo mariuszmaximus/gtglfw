@@ -66,20 +66,20 @@ void GenerateShortcutName( char *buffer, int bufferSize, int key, int mods )
 {
    buffer[ 0 ] = '\0';
 
-   if( mods & GLFW_MOD_SHIFT   ) strncat( buffer, "Shift+", bufferSize - strlen( buffer ) - 1 );
-   if( mods & GLFW_MOD_CONTROL ) strncat( buffer, "Ctrl+",  bufferSize - strlen( buffer ) - 1 );
-   if( mods & GLFW_MOD_ALT     ) strncat( buffer, "Alt+",   bufferSize - strlen( buffer ) - 1 );
-   if( mods & GLFW_MOD_SUPER   ) strncat( buffer, "Super+", bufferSize - strlen( buffer ) - 1 );
+   if( mods & GLFW_MOD_SHIFT   ) strncat( buffer, "Shift+", bufferSize - strlen( buffer ) -1 );
+   if( mods & GLFW_MOD_CONTROL ) strncat( buffer, "Ctrl+",  bufferSize - strlen( buffer ) -1 );
+   if( mods & GLFW_MOD_ALT     ) strncat( buffer, "Alt+",   bufferSize - strlen( buffer ) -1 );
+   if( mods & GLFW_MOD_SUPER   ) strncat( buffer, "Super+", bufferSize - strlen( buffer ) -1 );
 
    const char *keyName = get_key_name( key );
    if( keyName )
    {
-      strncat( buffer, keyName, bufferSize - strlen( buffer ) - 1 );
+      strncat( buffer, keyName, bufferSize - strlen( buffer ) -1 );
    }
    else
    {
       char keyBuf[ 16 ];
       snprintf( keyBuf, sizeof( keyBuf ), "Key_%d", key );
-      strncat( buffer, keyBuf, bufferSize - strlen( buffer ) - 1 );
+      strncat( buffer, keyBuf, bufferSize - strlen( buffer ) -1 );
    }
 }
