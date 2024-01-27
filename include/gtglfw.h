@@ -199,6 +199,7 @@ const char *gtPadL( const char *str, int length );
 const char *gtPadC( const char *str, int length );
 const char *gtPadR( const char *str, int length );
 const char *gtSpace( int count );
+const char *gtStrFormat( const char *str, const char *strTemplate );
 const char *gtSubStr( const char *str, int start, int count );
 const char *gtLeft( const char *str, int count );
 const char *gtRight( const char *str, int count );

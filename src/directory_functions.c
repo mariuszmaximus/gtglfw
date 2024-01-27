@@ -222,7 +222,7 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
             FileTimeToSystemTime( &ft, &st );
 
             struct tm tm = ConvertSystemTimeToTm( &st );
-            strftime( pFiles[ count ].date, sizeof( pFiles[ count ].date ), "%Y-%m-%d", &tm );
+            strftime( pFiles[ count ].date, sizeof( pFiles[ count ].date ), "%d-%m-%Y", &tm );
             strftime( pFiles[ count ].time, sizeof( pFiles[ count ].time ), "%H:%M:%S", &tm );
 
             // Setting attributes
@@ -295,7 +295,7 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
          snprintf( pFiles[ count ].size, sizeof( pFiles[ count ].size ), "%ld", fileInfo.st_size );
 
          struct tm *tm = localtime( &fileInfo.st_mtime );
-         strftime( pFiles[ count ].date, sizeof( pFiles[ count ].date ), "%Y-%m-%d", tm );
+         strftime( pFiles[ count ].date, sizeof( pFiles[ count ].date ), "%d-%m-%Y", tm );
          strftime( pFiles[ count ].time, sizeof( pFiles[ count ].time ), "%H:%M:%S", tm );
 
          strcpy( pFiles[ count ].attr, "" );
