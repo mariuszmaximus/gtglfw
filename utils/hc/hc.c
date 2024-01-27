@@ -168,13 +168,13 @@ static void PanelFetchList( Panel *pPanel, const char *currentDir )
    if( currentDir == NULL || ! gtIsValidPath( currentDir ) )
    {
       const char *dir = gtGetCurDir();
-      strncpy( pPanel->currentDir, dir, sizeof( pPanel->currentDir ) - 1 );
-      pPanel->currentDir[ sizeof( pPanel->currentDir ) - 1 ] = '\0';
+      strncpy( pPanel->currentDir, dir, sizeof( pPanel->currentDir ) -1 );
+      pPanel->currentDir[ sizeof( pPanel->currentDir ) -1 ] = '\0';
    }
    else
    {
-      strncpy( pPanel->currentDir, currentDir, sizeof( pPanel->currentDir ) - 1 );
-      pPanel->currentDir[ sizeof( pPanel->currentDir ) - 1 ] = '\0';
+      strncpy( pPanel->currentDir, currentDir, sizeof( pPanel->currentDir ) -1 );
+      pPanel->currentDir[ sizeof( pPanel->currentDir ) -1 ] = '\0';
    }
    pPanel->pFiles = gtDirectory( pPanel->currentDir, &pPanel->nFilesCount );
 
@@ -206,7 +206,6 @@ int CompareFiles( const void *a, const void *b )
    bool isHiddenB = strchr( fileB->attr, 'H' ) != NULL;
    if( isHiddenA != isHiddenB )
    {
-      return isHiddenA ? 1 : -1;
       return IIF( isHiddenA, 1, -1 );
    }
 
@@ -215,8 +214,8 @@ int CompareFiles( const void *a, const void *b )
 
 static void Autosize( App *pApp )
 {
-   Resize( leftPanel, 0, 0, gtMaxCol( pApp ) / 2, gtMaxRow( pApp ) - 1 );
-   Resize( rightPanel, gtMaxCol( pApp ) / 2, 0, gtMaxCol( pApp ) / 2, gtMaxRow( pApp ) - 1 );
+   Resize( leftPanel, 0, 0, gtMaxCol( pApp ) / 2, gtMaxRow( pApp ) -1 );
+   Resize( rightPanel, gtMaxCol( pApp ) / 2, 0, gtMaxCol( pApp ) / 2, gtMaxRow( pApp ) -1 );
 }
 
 static void Resize( Panel *pPanel, int col, int row, int maxCol, int maxRow )
@@ -246,7 +245,7 @@ static void DrawPanel( Panel *pPanel )
    }
 
    i += pPanel->rowNo;
-   for( row = pPanel->row + 1; row < pPanel->maxRow - 1; row++ )
+   for( row = pPanel->row + 1; row < pPanel->maxRow -1; row++ )
    {
       if( i < pPanel->nFilesCount )
       {
@@ -303,7 +302,7 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    SafeStrCopy( fileTime, gtPadR( time, 5 ), sizeof( fileTime ) );
 
    // Adding the appropriate number of spaces between fileName and fileSize
-   int spacesNeeded = pPanel->maxCol - strlen( fileName ) - strlen( fileSize ) - strlen( fileDate ) - strlen( fileTime ) - 4; // - 4for margins
+   int spacesNeeded = pPanel->maxCol - strlen( fileName ) - strlen( fileSize ) - strlen( fileDate ) - strlen( fileTime ) - 4; // - 4 for margins
    if( spacesNeeded < 0 ) spacesNeeded = 0;
 
    // Combining everything in one sequence
@@ -316,8 +315,8 @@ void SafeStrCopy( char *dest, const char *src, size_t destSize )
 {
    if( destSize == 0 ) return;
 
-   strncpy( dest, src, destSize - 1 );
-   dest[ destSize - 1 ] = '\0';
+   strncpy( dest, src, destSize -1 );
+   dest[ destSize -1 ] = '\0';
 }
 
 static void DrawComdLine( App *pApp, Panel *pPanel )
@@ -365,8 +364,8 @@ static void ChangeDir( Panel *pPanel )
 
 static void UpdatePanelFetchList( Panel *pPanel, const char *newDir )
 {
-   strncpy( pPanel->currentDir, newDir, sizeof( pPanel->currentDir ) - 1 );
-   pPanel->currentDir[ sizeof( pPanel->currentDir ) - 1 ] = '\0';
+   strncpy( pPanel->currentDir, newDir, sizeof( pPanel->currentDir ) -1 );
+   pPanel->currentDir[ sizeof( pPanel->currentDir ) -1 ] = '\0';
    PanelFetchList( pPanel, newDir );
 }
 
