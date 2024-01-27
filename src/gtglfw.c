@@ -14,6 +14,14 @@ static void cursor_position_callback( GLFWwindow *window, double x, double y )
    pApp->cursorY = y;
 }
 
+static void scroll_callback( GLFWwindow *window, double xoffset, double yoffset )
+{
+   App *pApp = glfwGetWindowUserPointer( window );
+
+   pApp->scrollXOffset = xoffset;
+   pApp->scrollYOffset = yoffset;
+}
+
 static void key_callback( GLFWwindow *window, int key, int scancode, int action, int mods )
 {
    App *pApp = glfwGetWindowUserPointer( window );
@@ -198,6 +206,7 @@ App *gtCreateWindow( int width, int height, const char *title )
    glfwSwapInterval( 1 );
 
    glfwSetCursorPosCallback( pApp->window, cursor_position_callback );
+   glfwSetScrollCallback( pApp->window, scroll_callback );
    glfwSetKeyCallback( pApp->window, key_callback );
    glfwSetMouseButtonCallback( pApp->window, mouse_button_callback );
    glfwSetWindowMaximizeCallback( pApp->window, window_maximize_callback );

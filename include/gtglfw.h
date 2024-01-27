@@ -141,6 +141,8 @@ struct _App
    bool         closeFlag;
    double       cursorX;
    double       cursorY;
+   double       scrollXOffset;
+   double       scrollYOffset;
    int          keyCode;
    int          keyScancode;
    int          keyAction;
