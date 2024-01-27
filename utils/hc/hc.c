@@ -12,6 +12,8 @@ static Panel *activePanel = NULL;
 int main()
 {
    App *app = gtCreateWindow( 830, 450, "Harbour Commander" );
+   double lastClickTime = 0;
+   bool firstClick = F;
 
    leftPanel = PanelInit( app );
    rightPanel = PanelInit( app );
@@ -32,6 +34,7 @@ int main()
          DrawPanel( rightPanel );
          DrawComdLine( app, activePanel );
 
+         // keyAction
          if( app->keyAction == GLFW_PRESS )
          {
             switch( app->keyCode )
@@ -118,12 +121,55 @@ int main()
             }
          }
 
+         // mouseAction
          if( app->mouseAction == GLFW_PRESS )
          {
             switch( app->mouseButton )
             {
             case GLFW_MOUSE_BUTTON_LEFT:
 
+               // Logika dla podwójnego kliknięcia
+               double currentTime = glfwGetTime();
+               if( firstClick && currentTime - lastClickTime < DOUBLE_CLICK_TIME )
+               {
+                  int index = activePanel->rowBar + activePanel->rowNo;
+                  if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
+                  {
+                     gtRun( gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL ) );
+                  }
+                  else
+                  {
+                     ChangeDir( activePanel );
+                  }
+                  firstClick = F; // Reset stanu
+               }
+               else
+               {
+                  firstClick = T;
+                  lastClickTime = currentTime;
+               }
+
+               double cursorX = app->cursorX / 9;
+               double cursorY = app->cursorY / 18;
+
+               int rowIndex = ( int ) cursorY - 1;
+
+               if( rowIndex >= 0 && rowIndex < gtMaxRow( app ) )
+               {
+                  if( cursorX < gtMaxCol( app ) / 2 )
+                  {
+                     activePanel = leftPanel;
+                  }
+                  else
+                  {
+                     activePanel = rightPanel;
+                  }
+
+                  if( rowIndex < activePanel->nFilesCount )
+                  {
+                     activePanel->rowBar = rowIndex;
+                  }
+               }
                app->mouseAction = GLFW_RELEASE;
                break;
 
@@ -173,7 +219,7 @@ int main()
             app->scrollYOffset = 0;
          }
 
-      //PrintPanelStructure( activePanel );
+      PrintPanelStructure( activePanel );
 
       ENDDRAWING( app );
       gtWaitEvents();
