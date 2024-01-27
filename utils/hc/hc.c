@@ -118,6 +118,61 @@ int main()
             }
          }
 
+         if( app->mouseAction == GLFW_PRESS )
+         {
+            switch( app->mouseButton )
+            {
+            case GLFW_MOUSE_BUTTON_LEFT:
+
+               app->mouseAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_MOUSE_BUTTON_RIGHT:
+
+               app->mouseAction = GLFW_RELEASE;
+               break;
+
+            default:
+               break;
+            }
+         }
+
+         if( app->scrollYOffset != 0 )
+         {
+            if( app->scrollYOffset > 0 )
+            {
+               // Logika przewijania w górę
+               if( activePanel->rowBar > 0 )
+               {
+                  --activePanel->rowBar;
+               }
+               else
+               {
+                  if( activePanel->rowNo > 0 )
+                  {
+                     --activePanel->rowNo;
+                  }
+               }
+            }
+            else if( app->scrollYOffset < 0 )
+            {
+               // Logika przewijania w dół
+               if( activePanel->rowBar < activePanel->maxRow - 3 && activePanel->rowBar <= activePanel->nFilesCount - 2 )
+               {
+                  ++activePanel->rowBar;
+               }
+               else
+               {
+                  if( activePanel->rowNo + activePanel->rowBar <= activePanel->nFilesCount - 3 )
+                  {
+                     ++activePanel->rowNo;
+                  }
+               }
+            }
+            app->scrollXOffset = 0;
+            app->scrollYOffset = 0;
+         }
+
       //PrintPanelStructure( activePanel );
 
       ENDDRAWING( app );
