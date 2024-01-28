@@ -71,13 +71,13 @@ int main()
 
             case GLFW_KEY_DOWN:
 
-               if( activePanel->rowBar < activePanel->maxRow - 3 && activePanel->rowBar <= activePanel->nFilesCount - 2 )
+               if( activePanel->rowBar < activePanel->maxRow -3 && activePanel->rowBar <= activePanel->nFilesCount -2 )
                {
                   ++activePanel->rowBar;
                }
                else
                {
-                  if( activePanel->rowNo + activePanel->rowBar <= activePanel->nFilesCount - 3 )
+                  if( activePanel->rowNo + activePanel->rowBar <= activePanel->nFilesCount -3 )
                   {
                      ++activePanel->rowNo;
                   }
@@ -99,6 +99,38 @@ int main()
                      --activePanel->rowNo;
                   }
                }
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_PAGE_DOWN:
+
+               if( activePanel->rowBar >= gtMaxRow( app ) -4 )
+               {
+                  if( activePanel->rowNo + gtMaxRow( app ) <= activePanel->nFilesCount )
+                  {
+                     activePanel->rowNo += gtMaxRow( app ) - activePanel->rowBar;
+                  }
+               }
+               activePanel->rowBar = MIN( gtMaxRow( app ) -4, activePanel->nFilesCount - activePanel->rowNo -1 );
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_PAGE_UP:
+
+               if( activePanel->rowBar <= 1 )
+               {
+                  if( activePanel->rowNo - gtMaxRow( app ) >= 0 )
+                  {
+                     activePanel->rowNo -= gtMaxRow( app );
+                  }
+                  else
+                  {
+                     activePanel->rowNo = 0; // Jeśli nie ma wystarczająco dużo wierszy do przewinięcia, ustaw na początek.
+                  }
+               }
+               activePanel->rowBar = 0;
 
                app->keyAction = GLFW_RELEASE;
                break;
@@ -203,13 +235,13 @@ int main()
             else if( app->scrollYOffset < 0 )
             {
                // Logika przewijania w dół
-               if( activePanel->rowBar < activePanel->maxRow - 3 && activePanel->rowBar <= activePanel->nFilesCount - 2 )
+               if( activePanel->rowBar < activePanel->maxRow -3 && activePanel->rowBar <= activePanel->nFilesCount -2 )
                {
                   ++activePanel->rowBar;
                }
                else
                {
-                  if( activePanel->rowNo + activePanel->rowBar <= activePanel->nFilesCount - 3 )
+                  if( activePanel->rowNo + activePanel->rowBar <= activePanel->nFilesCount -3 )
                   {
                      ++activePanel->rowNo;
                   }
@@ -357,7 +389,7 @@ static void DrawPanel( Panel *pPanel )
                pPanel->pFiles[ i ].size,
                pPanel->pFiles[ i ].date,
                pPanel->pFiles[ i ].time,
-               pPanel->pFiles[ i ].attr ), pPanel->maxCol - 2 ),
+               pPanel->pFiles[ i ].attr ), pPanel->maxCol -2 ),
             IIF( activePanel == pPanel && i == pPanel->rowBar + pPanel->rowNo, "000000/00FF00", "EAEAEA/000000" ) );
          ++i;
       }
@@ -377,11 +409,11 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    char fileTime[ 9 ];
    char fileAttr[ 6 ];
 
-   int maxFileNameLength = pPanel->maxCol - longestSize - 11 - 9 - 6 - 2;
+   int maxFileNameLength = pPanel->maxCol - longestSize - 11 - 9 - 6 -2;
 
    if( strcmp( name, ".." ) == 0 )
    {
-      SafeStrCopy( fileName, gtPadR( gtAddStr( "[", name, "]", NULL ), longestName - 11 - 9 - 6 - 2 ), sizeof( fileName ) );
+      SafeStrCopy( fileName, gtPadR( gtAddStr( "[", name, "]", NULL ), longestName - 11 - 9 - 6 -2 ), sizeof( fileName ) );
    }
    else
    {
@@ -406,8 +438,6 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    int spacesNeeded = pPanel->maxCol - strlen_utf8( fileName ) - strlen( fileSize ) - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) -5 ;
 
    snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s %s", fileName, spacesNeeded, "", fileSize, fileAttr, fileDate, fileTime );
-
-   printf( "%s\n", formattedLine );
 
    return formattedLine;
 }
@@ -442,10 +472,10 @@ static void ChangeDir( Panel *pPanel )
       UpdatePanelFetchList( pPanel, newDir );
 
       int lastPosition = MAX( DirIndexName( pPanel, tmpDir ), 1 ) ;
-      if( lastPosition > activePanel->maxRow - 3 )
+      if( lastPosition > activePanel->maxRow -3 )
       {
-         activePanel->rowNo  = lastPosition % ( activePanel->maxRow - 3 );
-         activePanel->rowBar = activePanel->maxRow - 3;
+         activePanel->rowNo  = lastPosition % ( activePanel->maxRow -3 );
+         activePanel->rowBar = activePanel->maxRow -3;
       }
       else
       {
