@@ -220,7 +220,7 @@ int main()
             app->scrollYOffset = 0;
          }
 
-      PrintPanelStructure( activePanel );
+      //PrintPanelStructure( activePanel );
 
       ENDDRAWING( app );
       gtWaitEvents();
@@ -372,18 +372,22 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
 {
    static char formattedLine[ 512 ];
    char fileName[ longestName + 1 ];
-   char fileSize[ 20 ];
+   char fileSize[ longestSize + 1 ];
    char fileDate[ 11 ];
-   char fileTime[ 6 ];
-   char fileAttr[ 4 ];
+   char fileTime[ 9 ];
+   char fileAttr[ 6 ];
+
+   int maxFileNameLength = pPanel->maxCol - longestSize - 11 - 9 - 6 - 2;
 
    if( strcmp( name, ".." ) == 0 )
    {
-      SafeStrCopy( fileName, gtPadR( gtAddStr( "[", name, "]", NULL ), longestName ), sizeof( fileName ) );
+      SafeStrCopy( fileName, gtPadR( gtAddStr( "[", name, "]", NULL ), longestName - 11 - 9 - 6 - 2 ), sizeof( fileName ) );
    }
    else
    {
-      SafeStrCopy( fileName, gtPadR( name, longestName ), sizeof( fileName ) );
+      int nameLen = strnlen( name, sizeof( fileName ) );
+      int copyLength = IIF( nameLen < maxFileNameLength, nameLen, maxFileNameLength );
+      SafeStrCopy( fileName, name, copyLength + 1 );
    }
 
    if( strchr( attr, 'D' ) != NULL )
@@ -392,23 +396,18 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    }
    else
    {
-      SafeStrCopy( fileSize, gtPadL( gtStrFormat( size, "9 999 999 999" ), longestSize ), sizeof( fileSize ) );
+      SafeStrCopy( fileSize, gtPadL( size, longestSize ), sizeof( fileSize ) );
    }
 
-   SafeStrCopy( fileAttr, gtPadL( attr, 3 ), sizeof( fileAttr ) );
+   SafeStrCopy( fileAttr, gtPadL( attr, 5 ), sizeof( fileAttr ) );
+   SafeStrCopy( fileDate, gtPadL( date, 10 ), sizeof( fileDate ) );
+   SafeStrCopy( fileTime, gtPadL( time, 8 ), sizeof( fileTime ) );
 
-   SafeStrCopy( fileSize + strlen( fileSize ), fileAttr, sizeof( fileSize ) - strlen( fileSize ) );
+   int spacesNeeded = pPanel->maxCol - strlen_utf8( fileName ) - strlen( fileSize ) - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) -5 ;
 
-   SafeStrCopy( fileDate, gtPadR( date, 10 ), sizeof( fileDate ) );
+   snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s %s", fileName, spacesNeeded, "", fileSize, fileAttr, fileDate, fileTime );
 
-   SafeStrCopy( fileTime, gtPadR( time, 5 ), sizeof( fileTime ) );
-
-   // Adding the appropriate number of spaces between fileName and fileSize
-   int spacesNeeded = pPanel->maxCol - strlen( fileName ) - strlen( fileSize ) - strlen( fileDate ) - strlen( fileTime ) - 4; // - 4 for margins
-   if( spacesNeeded < 0 ) spacesNeeded = 0;
-
-   // Combining everything in one sequence
-   snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s", fileName, spacesNeeded, "", fileSize, fileDate, fileTime );
+   printf( "%s\n", formattedLine );
 
    return formattedLine;
 }
