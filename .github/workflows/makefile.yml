@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v3
 
@@ -32,6 +32,10 @@ jobs:
           mingw-w64-x86_64-glew
           make
 
+    - name: Install dependencies on macOS
+      if: matrix.os == 'macos-latest'
+      run: brew install glfw3 glew
+
     - name: Build (Linux)
       run: make
       shell: bash
@@ -41,6 +45,11 @@ jobs:
       run: make
       shell: msys2 {0}
       if: matrix.os == 'windows-latest'
+
+    - name: Build (macOS)
+      run: make
+      shell: bash
+      if: matrix.os == 'macos-latest'
 
     - name: Run tests
       run: cd tests && make
@@ -52,6 +61,11 @@ jobs:
       shell: msys2 {0}
       if: matrix.os == 'windows-latest'
 
+    - name: Run tests (macOS)
+      run: cd tests && make
+      shell: bash
+      if: matrix.os == 'macos-latest'
+
     - name: Run hc
       run: cd utils/hc && make
       shell: bash
@@ -61,3 +75,8 @@ jobs:
       run: cd utils/hc && make
       shell: msys2 {0}
       if: matrix.os == 'windows-latest'
+
+    - name: Run hc (macOS)
+      run: cd utils/hc && make
+      shell: bash
+      if: matrix.os == 'macos-latest'
