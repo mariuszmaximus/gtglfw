@@ -372,7 +372,7 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
 {
    static char formattedLine[ 512 ];
    char fileName[ longestName + 1 ];
-   char fileSize[ longestSize + 4 + 1 ];
+   char fileSize[ 20 ];
    char fileDate[ 11 ];
    char fileTime[ 6 ];
    char fileAttr[ 4 ];
@@ -392,7 +392,7 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    }
    else
    {
-      SafeStrCopy( fileSize, gtPadL( gtStrFormat( size, "999 999 999" ), longestSize ), sizeof( fileSize ) );
+      SafeStrCopy( fileSize, gtPadL( gtStrFormat( size, "9 999 999 999" ), longestSize ), sizeof( fileSize ) );
    }
 
    SafeStrCopy( fileAttr, gtPadL( attr, 3 ), sizeof( fileAttr ) );
