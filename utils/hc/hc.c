@@ -215,6 +215,7 @@ int main()
                   }
                }
             }
+            DrawPanel( activePanel );
             app->scrollXOffset = 0;
             app->scrollYOffset = 0;
          }
@@ -391,7 +392,7 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    }
    else
    {
-      SafeStrCopy( fileSize, gtPadL( gtStrFormat( size, "9 999" ), longestSize ), sizeof( fileSize ) );
+      SafeStrCopy( fileSize, gtPadL( gtStrFormat( size, "999 999 999" ), longestSize ), sizeof( fileSize ) );
    }
 
    SafeStrCopy( fileAttr, gtPadL( attr, 3 ), sizeof( fileAttr ) );
