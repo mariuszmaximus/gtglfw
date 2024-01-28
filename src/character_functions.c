@@ -164,8 +164,8 @@ const char *gtStrFormat( const char *str, const char *strTemplate )
    // Formatuj ciąg od końca
    for( int i = lenTemplate - 1; i >= 0; i-- )
    {
-     if( strTemplate[ i ] == '9' )
-     {
+      if( strTemplate[ i ] == '9' )
+      {
          if( j >= 0 )
          {
             result[ i ] = str[ j ];

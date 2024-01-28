@@ -128,8 +128,8 @@ struct _FileInfo
    char name[ 512 ];
    char size[ 20 ];
    char date[ 11 ];
-   char time[ 6 ];
-   char attr[ 4 ];
+   char time[ 9 ];
+   char attr[ 6 ];
 };
 
 struct _App
