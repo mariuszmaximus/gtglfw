@@ -148,35 +148,32 @@ const char *gtSpace(int count) {
     return result;
 }
 
-const char *gtStrFormat( const char *str, const char *strTemplate )
-{
-   static char result[ 512 ];
-   int lenStr = strlen( str );
-   int lenTemplate = strlen( strTemplate );
-   int j = lenStr -1;
+const char *gtStrFormat(const char *str, const char *strTemplate) {
+    static char result[512];
+    int lenStr = strlen(str);
+    int lenTemplate = strlen(strTemplate);
+    int j = lenStr - 1;
 
-   for( int i = lenTemplate -1; i >= 0; i-- )
-   {
-      if( strTemplate[ i ] == '9' )
-      {
-         if( j >= 0 )
-         {
-            result[ i ] = str[ j ];
-            j--;
-         }
-         else
-         {
-            result[ i ] = ' ';
-         }
-      }
-      else
-      {
-         result[ i ] = strTemplate[ i ];
-      }
-   }
-   result[ lenTemplate ] = '\0';
+    // Wypełnij cały wynikowy ciąg spacjami
+    for (int i = 0; i < lenTemplate; i++) {
+        result[i] = ' ';
+    }
 
-   return result;
+    // Formatuj ciąg od końca
+    for (int i = lenTemplate - 1; i >= 0; i--) {
+        if (strTemplate[i] == '9') {
+            if (j >= 0) {
+                result[i] = str[j];
+                j--;
+            } else {
+                // Gdy skończą się cyfry, przerwij pętlę
+                break;
+            }
+        }
+    }
+
+    result[lenTemplate] = '\0'; // Zakończ ciąg znakiem null.
+    return result;
 }
 
 const char *gtSubStr( const char *str, int start, int count )
