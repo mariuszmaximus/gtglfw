@@ -49,7 +49,16 @@ int main()
                int index = activePanel->rowBar + activePanel->rowNo;
                if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
                {
-                  gtRun( gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL ) );
+                  const char *commandLine = gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL );
+                  if( strcmp( activePanel->pFiles[ index ].attr, "AE" ) == 0 )
+                  {
+                     gtRunApp( commandLine );
+                     printf( "Wykonał \n" );
+                  }
+                  else
+                  {
+                     gtRun( commandLine );
+                  }
                }
                else
                {
@@ -167,7 +176,16 @@ int main()
                   int index = activePanel->rowBar + activePanel->rowNo;
                   if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
                   {
-                     gtRun( gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL ) );
+                     const char *commandLine = gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL );
+                     if( strcmp( activePanel->pFiles[ index ].attr, "AE" ) == 0 )
+                     {
+                        gtRunApp( commandLine );
+                        printf( "Wykonał \n" );
+                     }
+                     else
+                     {
+                        gtRun( commandLine );
+                     }
                   }
                   else
                   {

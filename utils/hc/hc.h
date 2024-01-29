@@ -1,7 +1,7 @@
 #ifndef HC_H_
 #define HC_H_
 
-const double DOUBLE_CLICK_TIME = 0.25;
+const double DOUBLE_CLICK_TIME = 0.5;
 
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 typedef struct _Panel Panel;
