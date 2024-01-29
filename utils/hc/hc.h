@@ -40,6 +40,7 @@ static void   Autosize( App *pApp );
 static void   Resize( Panel *pPanel, int col, int row, int maxCol, int maxRow );
 static void   DrawPanel( Panel *pPanel );
 static const char *PaddedString( Panel *pPanel, int longestName, int longestSize, const char *name, const char *size, const char *date, const char *time, const char *attr );
+static const char *SelectColor( const char *attr, bool state );
 static void   SafeStrCopy( char *dest, const char *src, size_t destSize );
 static void   DrawComdLine( App *pApp, Panel *pPanel );
 static void   ChangeDir( Panel *pPanel );

@@ -408,7 +408,9 @@ static void DrawPanel( Panel *pPanel )
                pPanel->pFiles[ i ].date,
                pPanel->pFiles[ i ].time,
                pPanel->pFiles[ i ].attr ), pPanel->maxCol -2 ),
-            IIF( activePanel == pPanel && i == pPanel->rowBar + pPanel->rowNo, "000000/00FF00", "EAEAEA/000000" ) );
+            IIF( activePanel == pPanel && i == pPanel->rowBar + pPanel->rowNo,
+            IIF( pPanel->pFiles[ i ].state == F, "000000/00FF00", "EAEAEA/000000" ),
+            SelectColor( pPanel->pFiles[ i ].attr, pPanel->pFiles[ i ].state ) ) );
          ++i;
       }
       else
@@ -458,6 +460,27 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s %s", fileName, spacesNeeded, "", fileSize, fileAttr, fileDate, fileTime );
 
    return formattedLine;
+}
+
+static const char *SelectColor( const char *attr, bool state )
+{
+   const char *color = NULL;
+
+   if( strcmp( attr, "DH" ) == 0 || strcmp( attr, "AH" ) == 0 )
+   {
+      color = "EAEAEA/0370EA";
+   }
+   else
+   {
+      color = "EAEAEA/000000";
+   }
+
+   if( state == T )
+   {
+      color = "EAEAEA/FF0000";
+   }
+
+   return color;
 }
 
 void SafeStrCopy( char *dest, const char *src, size_t destSize )
