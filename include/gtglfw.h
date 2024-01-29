@@ -272,6 +272,7 @@ void gtFillgtRect( int x, int y, int width, int height, unsigned int color );
  * platforms. Ensure the total command length does not exceed these limits.
  */
 bool gtRun( const char *commandLine );
+bool gtRunApp( const char *commandLine );
 
 // text.c
 void gtDrawText( int x, int y, const char *text, unsigned int foreground );
