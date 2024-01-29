@@ -130,6 +130,7 @@ struct _FileInfo
    char date[ 11 ];
    char time[ 9 ];
    char attr[ 6 ];
+   bool state;
 };
 
 struct _App

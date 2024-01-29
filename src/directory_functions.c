@@ -236,6 +236,8 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
                strcat( pFiles[ count ].attr, "H" ); // Hidden file
             }
 
+            pFiles[ count ].state = F;
+
             count++;
          }
          while( FindNextFile( hFind, &findFileData ) != 0 );
@@ -288,6 +290,8 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
             closedir( pDir );
             return NULL;
          }
+
+         pFiles[ count ].state = F;
 
          strncpy( pFiles[ count ].name, entry->d_name, sizeof( pFiles[ count ].name ) -1 );
          pFiles[ count ].name[ sizeof( pFiles[ count ].name ) -1 ] = '\0';
