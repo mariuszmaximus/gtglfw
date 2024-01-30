@@ -11,9 +11,10 @@ static Panel *activePanel = NULL;
 
 int main()
 {
-   App *app = gtCreateWindow( 830, 450, "Harbour Commander" );
+   App *app = gtCreateWindow( 819, 450, "Harbour Commander" );
    double lastClickTime = 0;
    bool firstClick = F;
+   int index;
 
    leftPanel = PanelInit( app );
    rightPanel = PanelInit( app );
@@ -46,7 +47,7 @@ int main()
 
             case GLFW_KEY_ENTER:
 
-               int index = activePanel->rowBar + activePanel->rowNo;
+               index = activePanel->rowBar + activePanel->rowNo;
                if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
                {
                   const char *commandLine = gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL );
@@ -154,6 +155,39 @@ int main()
                {
                   activePanel = leftPanel;
                }
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_INSERT:
+
+               index = activePanel->rowBar + activePanel->rowNo;
+               // Sprawdzenie, czy aktualny element nie jest katalogiem nadrzędnym
+               if( strcmp( activePanel->pFiles[ index ].name, ".." ) != 0 )
+               {
+                  // Przełączanie stanu 'state' wybranego pliku
+                  if( activePanel->pFiles[ index ].state )
+                  {
+                     activePanel->pFiles[ index ].state = F;
+                  }
+                  else
+                  {
+                     activePanel->pFiles[ index ].state = T;
+                  }
+
+                  // Przewijanie listy plików w panelu, jeśli to możliwe
+                  if( activePanel->rowBar < activePanel->maxRow -3 && activePanel->rowBar <= activePanel->nFilesCount -2 )
+                  {
+                     ++activePanel->rowBar;
+                  }
+                  else
+                  {
+                     if( activePanel->rowNo + activePanel->rowBar <= activePanel->nFilesCount -3 )
+                     {
+                        ++activePanel->rowNo;
+                     }
+                  }
+               }
+
                app->keyAction = GLFW_RELEASE;
                break;
 
@@ -409,7 +443,7 @@ static void DrawPanel( Panel *pPanel )
                pPanel->pFiles[ i ].time,
                pPanel->pFiles[ i ].attr ), pPanel->maxCol -2 ),
             IIF( activePanel == pPanel && i == pPanel->rowBar + pPanel->rowNo,
-            IIF( pPanel->pFiles[ i ].state == F, "000000/00FF00", "EAEAEA/000000" ),
+            IIF( pPanel->pFiles[ i ].state == T, "000000/FF4D4D", "000000/00FF00" ),
             SelectColor( pPanel->pFiles[ i ].attr, pPanel->pFiles[ i ].state ) ) );
          ++i;
       }
@@ -464,23 +498,18 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
 
 static const char *SelectColor( const char *attr, bool state )
 {
-   const char *color = NULL;
-
-   if( strcmp( attr, "DH" ) == 0 || strcmp( attr, "AH" ) == 0 )
+   if( state == T )
    {
-      color = "EAEAEA/0370EA";
+      return "EAEAEA/B30000"; // Czerwony kolor dla zaznaczonych plików
+   }
+   else if( strcmp( attr, "DH" ) == 0 || strcmp( attr, "AH" ) == 0 )
+   {
+      return "EAEAEA/72A0E5"; // Niebieski kolor dla plików z atrybutami DH lub AH
    }
    else
    {
-      color = "EAEAEA/000000";
+      return "EAEAEA/000000"; // Standardowy kolor dla pozostałych plików
    }
-
-   if( state == T )
-   {
-      color = "EAEAEA/FF0000";
-   }
-
-   return color;
 }
 
 void SafeStrCopy( char *dest, const char *src, size_t destSize )
