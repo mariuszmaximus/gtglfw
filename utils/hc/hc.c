@@ -11,7 +11,7 @@ static Panel *activePanel = NULL;
 
 int main()
 {
-   App *app = gtCreateWindow( 819, 450, "Harbour Commander" );
+   App *app = gtCreateWindow( 837, 450, "Harbour Commander" );
    double lastClickTime = 0;
    bool firstClick = F;
    int index;
@@ -25,6 +25,8 @@ int main()
    activePanel = leftPanel;
 
    gtBackground( app, 0xEAEAEA );
+
+   SetIcon( app->window );
 
    while( ! gtMainLoop( app ) )
    {
@@ -427,7 +429,7 @@ static void DrawPanel( Panel *pPanel )
    }
    else
    {
-      gtDispBox( pPanel->col, pPanel->row, pPanel->maxCol, pPanel->maxRow, 0x000000 );
+      gtDispBox( pPanel->col, pPanel->row, pPanel->maxCol, pPanel->maxRow, 0x323232 );
    }
 
    i += pPanel->rowNo;
@@ -443,7 +445,7 @@ static void DrawPanel( Panel *pPanel )
                pPanel->pFiles[ i ].time,
                pPanel->pFiles[ i ].attr ), pPanel->maxCol -2 ),
             IIF( activePanel == pPanel && i == pPanel->rowBar + pPanel->rowNo,
-            IIF( pPanel->pFiles[ i ].state == T, "000000/FF4D4D", "000000/00FF00" ),
+            IIF( pPanel->pFiles[ i ].state == T, "323232/FF4D4D", "323232/00FF00" ),
             SelectColor( pPanel->pFiles[ i ].attr, pPanel->pFiles[ i ].state ) ) );
          ++i;
       }
@@ -508,7 +510,7 @@ static const char *SelectColor( const char *attr, bool state )
    }
    else
    {
-      return "EAEAEA/000000"; // Standardowy kolor dla pozostałych plików
+      return "EAEAEA/323232"; // Standardowy kolor dla pozostałych plików
    }
 }
 
@@ -526,7 +528,7 @@ static void DrawComdLine( App *pApp, Panel *pPanel )
    int height = pApp->height;
 
    gtDrawTextBG( 0, height -18,
-      gtPadR( pPanel->currentDir, width / 9 + 1 ), 0x000000, 0x00FF00 );
+      gtPadR( pPanel->currentDir, width / 9 + 1 ), 0x323232, 0x00FF00 );
 }
 
 static void ChangeDir( Panel *pPanel )
@@ -612,6 +614,32 @@ static int FindLongestSize( Panel *pPanel )
    }
 
    return longestSize;
+}
+
+static void SetIcon( GLFWwindow* window )
+{
+   int x, y;
+   unsigned char pixels[ 16 * 16 * 4 ];
+   unsigned char *target = pixels;
+   GLFWimage img = { 16, 16, pixels };
+
+   for( y = 0;  y < img.width;  y++ )
+   {
+      for( x = 0;  x < img.height;  x++ )
+      {
+         if( hc_logo[ y ][ x ] == '0' )
+         {
+            memcpy( target, icon_colors[ 1 ], 4 ); // green color
+         }
+         else
+         {
+            memset( target, 0, 4 ); // black color
+         }
+         target += 4;
+      }
+   }
+
+   glfwSetWindowIcon( window, 1, &img );
 }
 
 static void PrintPanelStructure( const Panel *pPanel )

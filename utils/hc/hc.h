@@ -3,6 +3,32 @@
 
 const double DOUBLE_CLICK_TIME = 0.5;
 
+const char *const hc_logo[] =
+{
+   "................",
+   "................",
+   "................",
+   "................",
+   "................",
+   "..0...0...0000..",
+   "..0...0...0.....",
+   "..00000...0.....",
+   "..0...0...0.....",
+   "..0...0...0000..",
+   "................",
+   "................",
+   "................",
+   "................",
+   "................",
+   "................"
+};
+
+const unsigned char icon_colors[ 2 ][ 4 ] =
+{
+   { 0,   0, 0, 255 },
+   { 0, 255, 0, 255 },
+};
+
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 typedef struct _Panel Panel;
 
@@ -47,6 +73,7 @@ static void   ChangeDir( Panel *pPanel );
 static int    DirIndexName( Panel *pPanel, const char *tmpDir );
 static int    FindLongestName( Panel *pPanel );
 static int    FindLongestSize( Panel *pPanel );
+static void   SetIcon( GLFWwindow *window );
 static void   PrintPanelStructure( const Panel *pPanel );
 
 #define IIF( condition, trueValue, falseValue ) ( ( condition ) ? ( trueValue ) : ( falseValue ) )
