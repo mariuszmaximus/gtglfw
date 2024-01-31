@@ -56,7 +56,6 @@ int main()
                   if( strcmp( activePanel->pFiles[ index ].attr, "AE" ) == 0 )
                   {
                      gtRunApp( commandLine );
-                     printf( "Wykonał \n" );
                   }
                   else
                   {
@@ -216,7 +215,6 @@ int main()
                      if( strcmp( activePanel->pFiles[ index ].attr, "AE" ) == 0 )
                      {
                         gtRunApp( commandLine );
-                        printf( "Wykonał \n" );
                      }
                      else
                      {
@@ -502,15 +500,15 @@ static const char *SelectColor( const char *attr, bool state )
 {
    if( state == T )
    {
-      return "EAEAEA/B30000"; // Czerwony kolor dla zaznaczonych plików
+      return "EAEAEA/B30000"; // Kolor na zaznaczonych plikach
    }
    else if( strcmp( attr, "DH" ) == 0 || strcmp( attr, "AH" ) == 0 )
    {
-      return "EAEAEA/72A0E5"; // Niebieski kolor dla plików z atrybutami DH lub AH
+      return "EAEAEA/72A0E5";
    }
    else
    {
-      return "EAEAEA/323232"; // Standardowy kolor dla pozostałych plików
+      return "EAEAEA/323232"; // Kolor dla pozostałych plików
    }
 }
 
