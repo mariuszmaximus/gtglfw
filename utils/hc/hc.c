@@ -304,7 +304,7 @@ int main()
             app->scrollYOffset = 0;
          }
 
-      //PrintPanelStructure( activePanel );
+      PrintPanelStructure( activePanel );
 
       ENDDRAWING( app );
       gtWaitEvents();
