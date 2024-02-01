@@ -527,6 +527,8 @@ static void DrawComdLine( App *pApp, Panel *pPanel )
 
    gtDrawTextBG( 0, height -18,
       gtPadR( pPanel->currentDir, width / 9 + 1 ), 0x323232, 0x00FF00 );
+
+   gtDrawText( strlen( pPanel->currentDir ) * 9, ( gtMaxRow( pApp ) -1 ) * 18, "_", 0xFFFFFF );
 }
 
 static void ChangeDir( Panel *pPanel )
@@ -668,6 +670,7 @@ static void PrintPanelStructure( const Panel *pPanel )
       printf( "                Date : %s \n", pPanel->pFiles[ index ].date );
       printf( "                Time : %s \n", pPanel->pFiles[ index ].time );
       printf( "                Attr : %s \n", pPanel->pFiles[ index ].attr );
+      printf( "                State: %d \n", pPanel->pFiles[ index ].state );
    }
    else
    {
