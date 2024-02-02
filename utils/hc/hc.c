@@ -44,6 +44,13 @@ int main()
             {
             case GLFW_KEY_ESCAPE:
 
+               if( app->keyMods & GLFW_MOD_CONTROL )
+               {
+                  PrintPanelStructure( activePanel );
+                  app->keyAction = GLFW_RELEASE;
+                  break;
+               }
+
                gtExitApp( app );
                break;
 
@@ -303,8 +310,6 @@ int main()
             app->scrollXOffset = 0;
             app->scrollYOffset = 0;
          }
-
-      PrintPanelStructure( activePanel );
 
       ENDDRAWING( app );
       gtWaitEvents();
