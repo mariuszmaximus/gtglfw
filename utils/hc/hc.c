@@ -367,7 +367,7 @@ static void PanelFetchList( Panel *pPanel, const char *currentDir )
       strncpy( pPanel->currentDir, currentDir, sizeof( pPanel->currentDir ) -1 );
       pPanel->currentDir[ sizeof( pPanel->currentDir ) -1 ] = '\0';
    }
-
+   
    free( pPanel->pFiles );
    pPanel->nFilesCount = 0;
    pPanel->pFiles = gtDirectory( pPanel->currentDir, &pPanel->nFilesCount );
@@ -471,11 +471,11 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    char fileTime[ 9 ];
    char fileAttr[ 6 ];
 
-   int maxFileNameLength = pPanel->maxCol - longestSize - 11 - 9 - 6 -2;
+   int maxFileNameLength = pPanel->maxCol - longestSize - 11 - 9 - 6 - 2;
 
    if( strcmp( name, ".." ) == 0 )
    {
-      SafeStrCopy( fileName, gtPadR( gtAddStr( "[", name, "]", NULL ), longestName - 11 - 9 - 6 -2 ), sizeof( fileName ) );
+      SafeStrCopy( fileName, gtPadR( gtAddStr( "[", name, "]", NULL ), longestName - 11 - 9 - 6 - 2 ), sizeof( fileName ) );
    }
    else
    {
@@ -498,7 +498,7 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    SafeStrCopy( fileTime, gtPadL( time, 8 ), sizeof( fileTime ) );
 
    int spacesNeeded = pPanel->maxCol - strlen_utf8( fileName ) - strlen( fileSize ) - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) -5 ;
-
+   
    snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s %s", fileName, spacesNeeded, "", fileSize, fileAttr, fileDate, fileTime );
 
    return formattedLine;
