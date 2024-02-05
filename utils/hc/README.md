@@ -20,7 +20,6 @@ File manager [hc.c](hc.c)
    gcc hc.c -o hc -I ../../include -L ../../lib -lgtglfw -lopengl32 -lglfw3 -lm
    ```
 - Linux
-
    ```
    cd utils/hc/
    make
