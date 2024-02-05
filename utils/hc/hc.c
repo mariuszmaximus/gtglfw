@@ -79,10 +79,28 @@ int main()
 
             case GLFW_KEY_RIGHT:
 
+               if( activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && activePanel->cmdCol < strlen( activePanel->cmdLine ) -1 )
+               {
+                  activePanel->cmdCol++;
+               }
+               else if( activePanel->cmdColNo + activePanel->cmdCol < strlen( activePanel->cmdLine ) -1 )
+               {
+                  activePanel->cmdColNo++;
+               }
+
                app->keyAction = GLFW_RELEASE;
                break;
 
             case GLFW_KEY_LEFT:
+
+               if( activePanel->cmdCol > 0 )
+               {
+                  activePanel->cmdCol--;
+               }
+               else if( activePanel->cmdColNo >= 1 )
+               {
+                  activePanel->cmdColNo--;
+               }
 
                app->keyAction = GLFW_RELEASE;
                break;
@@ -334,6 +352,8 @@ static Panel *PanelInit( App *pApp )
    memset( pPanel, 0, sizeof( Panel ) );
    pPanel->pApp = pApp;
 
+   pPanel->cmdLine = "";
+
    pPanel->isFirstDirectory  = T;
    pPanel->isHiddenDirectory = F;
    pPanel->isFirstFile       = F;
@@ -367,7 +387,7 @@ static void PanelFetchList( Panel *pPanel, const char *currentDir )
       strncpy( pPanel->currentDir, currentDir, sizeof( pPanel->currentDir ) -1 );
       pPanel->currentDir[ sizeof( pPanel->currentDir ) -1 ] = '\0';
    }
-   
+
    free( pPanel->pFiles );
    pPanel->nFilesCount = 0;
    pPanel->pFiles = gtDirectory( pPanel->currentDir, &pPanel->nFilesCount );
@@ -498,7 +518,7 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    SafeStrCopy( fileTime, gtPadL( time, 8 ), sizeof( fileTime ) );
 
    int spacesNeeded = pPanel->maxCol - strlen_utf8( fileName ) - strlen( fileSize ) - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) -5 ;
-   
+
    snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s %s", fileName, spacesNeeded, "", fileSize, fileAttr, fileDate, fileTime );
 
    return formattedLine;
@@ -536,7 +556,7 @@ static void DrawComdLine( App *pApp, Panel *pPanel )
    gtDrawTextBG( 0, height -18,
       gtPadR( pPanel->currentDir, width / 9 + 1 ), 0x323232, 0x00FF00 );
 
-   gtDrawText( strlen( pPanel->currentDir ) * 9, ( gtMaxRow( pApp ) -1 ) * 18, "_", 0xFFFFFF );
+   gtDrawText( strlen( pPanel->currentDir ) * 9 + pPanel->cmdCol * 9, height -18, "_", 0xFFFFFF );
 }
 
 static void ChangeDir( Panel *pPanel )
