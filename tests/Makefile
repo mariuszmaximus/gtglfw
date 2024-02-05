@@ -1,13 +1,9 @@
 CC = $(shell which gcc || which clang || which cc)
-CFLAGS = -Wall -Wextra -O3
+CFLAGS = -Wall -Wextra -O3 -std=c99
 INCLUDES = -I../include
 EXAMPLES = $(wildcard *.c)
 
 UNAME_S := $(shell uname -s || echo Windows_NT)
-#CC_NAME := $(notdir $(CC))
-
-# Set destination directory including OS and compiler name
-# DESTDIR := lib/$(UNAME_S)/$(CC_NAME)
 DESTDIR := lib/
 
 ifeq ($(UNAME_S),Linux)

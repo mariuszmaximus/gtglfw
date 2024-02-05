@@ -8,7 +8,18 @@ File manager [hc.c](hc.c)
 
 ![Main](../../docs/assets/img/hc.png)
 
-- To build and run hc:
+### To build and run hc:
+
+- MSYS2
+   ```
+   cd utils/hc/
+   make
+   ```
+   or:
+   ```
+   gcc hc.c -o hc -I ../../include -L ../../lib -lgtglfw -lopengl32 -lglfw3 -lm
+   ```
+- Linux
 
    ```
    cd utils/hc/
@@ -16,6 +27,6 @@ File manager [hc.c](hc.c)
    ```
    or:
    ```
-   gcc hc.c -o hc -I ../../include -L ../../lib/Linux/gcc -lgtglfw -lGL -lglfw -lm
+   gcc hc.c -o hc -I ../../include -L ../../lib -lgtglfw -lGL -lglfw -lm
    ```
 ---

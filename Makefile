@@ -3,11 +3,6 @@ AR = ar
 ARFLAGS = rcs
 LIBNAME = libgtglfw.a
 
-# UNAME_S := $(shell uname -s || echo Windows_NT)
-# CC_NAME := $(notdir $(CC))
-
-# Set destination directory including OS and compiler name
-# DESTDIR := lib/$(UNAME_S)/$(CC_NAME)
 DESTDIR := lib/
 CFLAGS := -Wall -Wextra -O3 -std=c99
 

@@ -34,7 +34,7 @@ Before installing the packages, make sure you're running the MinGW 64-bit shell.
    ```
    or single build:
    ```
-   gcc main.c -o main -I ../include -L ../lib/win/mingw64 -lgtglfw -lopengl32 -lglfw3 -lm
+   gcc main.c -o main -I ../include -L ../lib -lgtglfw -lopengl32 -lglfw3 -lm
    ```
 
 ## Installing on Linux
@@ -60,6 +60,6 @@ Before installing the packages, make sure you're running the MinGW 64-bit shell.
    ```
    or single build:
    ```
-   gcc main.c -o main -I ../include -L ../lib/Linux/gcc -lgtglfw -lGL -lglfw -lm
+   gcc main.c -o main -I ../include -L ../lib -lgtglfw -lGL -lglfw -lm
    ```
 ---
