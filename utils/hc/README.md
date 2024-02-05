@@ -17,7 +17,7 @@ File manager [hc.c](hc.c)
    ```
    or:
    ```
-   gcc hc.c -o hc -I ../../include -L ../../lib -lgtglfw -lopengl32 -lglfw3 -lm
+   gcc hc.c -o hc -I ../../include -L ../../lib -lgtglfw -lopengl32 -lglfw3
    ```
 - Linux
    ```
@@ -26,6 +26,6 @@ File manager [hc.c](hc.c)
    ```
    or:
    ```
-   gcc hc.c -o hc -I ../../include -L ../../lib -lgtglfw -lGL -lglfw -lm
+   gcc hc.c -o hc -I ../../include -L ../../lib -lgtglfw -lGL -lglfw
    ```
 ---

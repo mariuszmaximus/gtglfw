@@ -8,13 +8,13 @@ DESTDIR := lib/
 
 ifeq ($(UNAME_S),Linux)
     EXECUTABLES = $(EXAMPLES:.c=)
-    LIBS = -L../../$(DESTDIR) -lgtglfw -lGL -lglfw -lm
+    LIBS = -L../../$(DESTDIR) -lgtglfw -lGL -lglfw
 else ifeq ($(UNAME_S),Darwin)
     EXECUTABLES = $(EXAMPLES:.c=)
-    LIBS = -L../../$(DESTDIR) -lgtglfw -lglfw -framework OpenGL -lm
+    LIBS = -L../../$(DESTDIR) -lgtglfw -lglfw -framework OpenGL
 else
     EXECUTABLES = $(EXAMPLES:.c=.exe)
-    LIBS = -L../../$(DESTDIR) -lgtglfw -lglfw3 -lopengl32 -lm
+    LIBS = -L../../$(DESTDIR) -lgtglfw -lglfw3 -lopengl32
 endif
 
 all: $(EXECUTABLES)
