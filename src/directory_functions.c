@@ -192,6 +192,15 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
       }
       else
       {
+         // Allocate initial space for FileInfo array
+         pFiles = malloc( sizeof( FileInfo ) * INITIAL_FPCSR );
+         if( ! pFiles )
+         {
+            fprintf( stderr, "Memory allocation error.\n" );
+            FindClose( hFind );
+            return NULL;
+         }
+
          do
          {
             // Skipping the current directory
@@ -206,9 +215,25 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
                parentIndex = count;
             }
 
-            strncpy( pFiles[ count ].name, findFileData.cFileName, sizeof( pFiles[ count ].name ) -1 );
-            pFiles[ count ].name[ sizeof( pFiles[ count ].name ) -1 ] = '\0';
+            // Check if additional space is needed and reallocate
+            if( count >= INITIAL_FPCSR )
+            {
+               FileInfo *temp = realloc( pFiles, sizeof( FileInfo ) * ( count + 1 ) );
+               if( ! temp )
+               {
+                  fprintf( stderr, "Memory allocation error.\n" );
+                  FindClose( hFind );
+                  free( pFiles ); // Free the previous memory allocation
+                  return NULL;
+               }
+               pFiles = temp;
+            }
 
+            // Initialize FileInfo structure
+            pFiles[ count ].state = F;
+
+            strncpy( pFiles[ count ].name, findFileData.cFileName, sizeof( pFiles[ count ].name ) - 1 );
+            pFiles[ count ].name[ sizeof( pFiles[ count ].name ) - 1 ] = '\0';
             // Setting the file size
             LARGE_INTEGER fileSize;
             fileSize.LowPart = findFileData.nFileSizeLow;
