@@ -1,5 +1,5 @@
 CC = $(shell which gcc || which clang || which cc)
-CFLAGS = -Wall -Wextra -O3
+CFLAGS = -Wall -Wextra -O3 -std=c99
 INCLUDES = -I../../include
 EXAMPLES = $(wildcard *.c)
 

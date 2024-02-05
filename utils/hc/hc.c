@@ -367,6 +367,9 @@ static void PanelFetchList( Panel *pPanel, const char *currentDir )
       strncpy( pPanel->currentDir, currentDir, sizeof( pPanel->currentDir ) -1 );
       pPanel->currentDir[ sizeof( pPanel->currentDir ) -1 ] = '\0';
    }
+
+   free( pPanel->pFiles );
+   pPanel->nFilesCount = 0;
    pPanel->pFiles = gtDirectory( pPanel->currentDir, &pPanel->nFilesCount );
 
    if( pPanel->isFirstDirectory )
