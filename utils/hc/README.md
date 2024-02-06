@@ -10,6 +10,8 @@ File manager [hc.c](hc.c)
 
 ### To build and run hc:
 
+- First, build a library [gtglfw](../../docs/README.md)
+
 - MSYS2
    ```
    cd utils/hc/
