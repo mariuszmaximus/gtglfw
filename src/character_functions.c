@@ -311,6 +311,8 @@ int gtRAt( const char *search, const char *target )
 
 const char *gt_Stuff( const char *string, size_t stringLen, size_t start, size_t delete, const char *insert, size_t insertLen )
 {
+   static char result[ 512 ];
+
    // Konwersja pozycji
    if( start > 0 )
    {
@@ -330,15 +332,8 @@ const char *gt_Stuff( const char *string, size_t stringLen, size_t start, size_t
 
    // Sprawdzenie wielkości bez przepełnienia
    size_t resultSize = stringLen + insertLen - delete;
-   if( resultSize > 0 && resultSize < USHRT_MAX )
+   if( resultSize > 0 && resultSize < sizeof( result ) )
    {
-      char *result = malloc( resultSize + 1 );
-
-      if( result == NULL )
-      {
-         return "";
-      }
-
       // Budowa wynikowego ciągu
       memcpy( result, string, start );
       memcpy( result + start, insert, insertLen );
