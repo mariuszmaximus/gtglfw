@@ -79,11 +79,11 @@ int main()
 
             case GLFW_KEY_RIGHT:
 
-               if( activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && activePanel->cmdCol < strlen( activePanel->cmdLine ) -1 )
+               if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) - 1 )
                {
                   activePanel->cmdCol++;
                }
-               else if( activePanel->cmdColNo + activePanel->cmdCol < strlen( activePanel->cmdLine ) -1 )
+               else if( activePanel->cmdColNo + ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) - 1 )
                {
                   activePanel->cmdColNo++;
                }
@@ -517,7 +517,8 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    SafeStrCopy( fileDate, gtPadL( date, 10 ), sizeof( fileDate ) );
    SafeStrCopy( fileTime, gtPadL( time, 8 ), sizeof( fileTime ) );
 
-   int spacesNeeded = pPanel->maxCol - strlen_utf8( fileName ) - strlen( fileSize ) - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) -5 ;
+   size_t fileSizeLength = IIF( fileSize[ 0 ] != '\0', strnlen( fileSize, longestSize ), 0 );
+   int spacesNeeded = pPanel->maxCol - strlen_utf8( fileName ) - fileSizeLength - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) - 5;
 
    snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s %s", fileName, spacesNeeded, "", fileSize, fileAttr, fileDate, fileTime );
 
