@@ -106,6 +106,20 @@ int main()
                app->keyAction = GLFW_RELEASE;
                break;
 
+            case GLFW_KEY_HOME:
+
+               activePanel->cmdCol = 0;
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_END:
+
+               activePanel->cmdCol = strlen( activePanel->cmdLine );
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
             case GLFW_KEY_DOWN:
 
                if( activePanel->rowBar < activePanel->maxRow -3 && activePanel->rowBar <= activePanel->nFilesCount -2 )
