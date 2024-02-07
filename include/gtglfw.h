@@ -1,6 +1,7 @@
 #ifndef GTGLFW_H_
 #define GTGLFW_H_
 
+#include <errno.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -11,9 +12,6 @@
 #if defined( _WIN32 ) || defined( _WIN64 )
    #include <direct.h>
    #include <windows.h>
-   #ifdef __clang__
-      #include <errno.h>
-   #endif
    #define gt_GetCurrentDir _getcwd
 #else
    #include <dirent.h>
