@@ -2,6 +2,7 @@
 #define GTGLFW_H_
 
 #include <errno.h>
+#include <limits.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -15,7 +16,6 @@
    #define gt_GetCurrentDir _getcwd
 #else
    #include <dirent.h>
-   #include <errno.h>
    #include <sys/stat.h>
    #include <unistd.h>
    #define gt_GetCurrentDir getcwd
@@ -149,6 +149,7 @@ struct _App
    int          keyScancode;
    int          keyAction;
    int          keyMods;
+   char         keyChar[ 5 ];
    int          mouseButton;
    int          mouseAction;
    int          mouseMods;
@@ -208,6 +209,8 @@ const char *gtSubStr( const char *str, int start, int count );
 const char *gtLeft( const char *str, int count );
 const char *gtRight( const char *str, int count );
 int         gtRAt( const char *search, const char *target );
+const char *gt_Stuff( const char *string, size_t stringLen, size_t start, size_t delete, const char *insert, size_t insertLen );
+const char *gtStuff( const char *string, size_t start, size_t delete, const char *insert );
 
 // directory_functions.c
 bool        gtIsValidPath( const char *path );
@@ -289,6 +292,7 @@ unsigned int  convert_hex_to_int( const char *hex );
 char         *gt_strdup( const char *str );
 size_t        strlen_utf8( const char* str );
 const char   *utf8_offset_to_pointer( const char *str, int offset );
+size_t encode_utf8( char* s, unsigned int ch );
 
 void GenerateShortcutName( char *buffer, int bufferSize, int key, int mods );
 

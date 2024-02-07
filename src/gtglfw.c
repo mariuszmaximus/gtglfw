@@ -37,6 +37,16 @@ static void key_callback( GLFWwindow *window, int key, int scancode, int action,
    pApp->keyMods     = mods;
 }
 
+static void char_callback( GLFWwindow* window, unsigned int codepoint )
+{
+   App *pApp = glfwGetWindowUserPointer( window );
+
+   char string[ 5 ] = "";
+   encode_utf8( string, codepoint );
+
+   strcpy( pApp->keyChar, string );
+}
+
 static void mouse_button_callback( GLFWwindow *window, int button, int action, int mods )
 {
    App *pApp = glfwGetWindowUserPointer( window );
@@ -171,6 +181,34 @@ const char *utf8_offset_to_pointer( const char *str, int offset )
    return s;
 }
 
+size_t encode_utf8( char* s, unsigned int ch )
+{
+   size_t count = 0;
+
+   if( ch < 0x80 )
+      s[ count++ ] = ( char ) ch;
+   else if( ch < 0x800 )
+   {
+      s[ count++ ] = ( ch >> 6 ) | 0xc0;
+      s[ count++ ] = ( ch & 0x3f ) | 0x80;
+   }
+   else if( ch < 0x10000 )
+   {
+      s[ count++ ] = ( ch >> 12) | 0xe0;
+      s[ count++ ] = ( ( ch >> 6 ) & 0x3f) | 0x80;
+      s[ count++ ] = ( ch & 0x3f ) | 0x80;
+   }
+   else if( ch < 0x110000 )
+   {
+      s[ count++ ] = ( ch >> 18) | 0xf0;
+      s[ count++ ] = ( ( ch >> 12 ) & 0x3f ) | 0x80;
+      s[ count++ ] = ( ( ch >> 6 ) & 0x3f ) | 0x80;
+      s[ count++ ] = ( ch & 0x3f) | 0x80;
+   }
+
+   return count;
+}
+
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 // API functions
 App *gtCreateWindow( int width, int height, const char *title )
@@ -208,6 +246,7 @@ App *gtCreateWindow( int width, int height, const char *title )
    glfwSetCursorPosCallback( pApp->window, cursor_position_callback );
    glfwSetScrollCallback( pApp->window, scroll_callback );
    glfwSetKeyCallback( pApp->window, key_callback );
+   glfwSetCharCallback( pApp->window, char_callback );
    glfwSetMouseButtonCallback( pApp->window, mouse_button_callback );
    glfwSetWindowMaximizeCallback( pApp->window, window_maximize_callback );
    glfwSetWindowSizeCallback( pApp->window, window_size_callback );

@@ -308,3 +308,52 @@ int gtRAt( const char *search, const char *target )
 
    return 0;
 }
+
+const char *gt_Stuff( const char *string, size_t stringLen, size_t start, size_t delete, const char *insert, size_t insertLen )
+{
+   // Konwersja pozycji
+   if( start > 0 )
+   {
+      start--;
+   }
+
+   // Ograniczenia dla parametrów
+   if( start > stringLen )
+   {
+      start = stringLen;
+   }
+
+   if( delete > stringLen - start )
+   {
+      delete = stringLen - start;
+   }
+
+   // Sprawdzenie wielkości bez przepełnienia
+   size_t resultSize = stringLen + insertLen - delete;
+   if( resultSize > 0 && resultSize < USHRT_MAX )
+   {
+      char *result = malloc( resultSize + 1 );
+
+      if( result == NULL )
+      {
+         return "";
+      }
+
+      // Budowa wynikowego ciągu
+      memcpy( result, string, start );
+      memcpy( result + start, insert, insertLen );
+      memcpy( result + start + insertLen, string + start + delete, stringLen - ( start + delete ) );
+      result[ resultSize ] = '\0';
+
+      return result;
+   }
+   else
+   {
+      return "";
+   }
+}
+
+const char *gtStuff( const char *string, size_t start, size_t delete, const char *insert )
+{
+   return gt_Stuff( string, strlen( string ), start, delete, insert, strlen( insert ) );
+}
