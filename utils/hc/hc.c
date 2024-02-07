@@ -15,6 +15,7 @@ int main()
    double lastClickTime = 0;
    bool firstClick = F;
    int index;
+   double currentTime;
 
    leftPanel = PanelInit( app );
    rightPanel = PanelInit( app );
@@ -230,7 +231,7 @@ int main()
             case GLFW_MOUSE_BUTTON_LEFT:
 
                // Logika dla podwójnego kliknięcia
-               double currentTime = glfwGetTime();
+               currentTime = glfwGetTime();
                if( firstClick && currentTime - lastClickTime < DOUBLE_CLICK_TIME )
                {
                   int index = activePanel->rowBar + activePanel->rowNo;
