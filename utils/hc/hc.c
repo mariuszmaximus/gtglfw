@@ -80,11 +80,11 @@ int main()
 
             case GLFW_KEY_RIGHT:
 
-               if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) - 1 )
+               if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) )
                {
                   activePanel->cmdCol++;
                }
-               else if( activePanel->cmdColNo + ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) - 1 )
+               else if( activePanel->cmdColNo + ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) )
                {
                   activePanel->cmdColNo++;
                }
@@ -231,6 +231,7 @@ int main()
                   {
                      activePanel->cmdColNo++;
                   }
+                  printf( "Debugging app->keyChar %s \n", app->keyChar );
                   app->keyAction = GLFW_RELEASE;
                }
                break;
