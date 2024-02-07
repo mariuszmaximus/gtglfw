@@ -219,6 +219,20 @@ int main()
                break;
 
             default:
+
+               if( app->keyChar[ 0 ] >= GLFW_KEY_SPACE || strcmp( app->keyChar, "" ) != 0 )
+               {
+                  if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) )
+                  {
+                     activePanel->cmdLine = gtStuff( activePanel->cmdLine, activePanel->cmdCol + activePanel->cmdColNo + 1, 0, app->keyChar );
+                     activePanel->cmdCol++;
+                  }
+                  else
+                  {
+                     activePanel->cmdColNo++;
+                  }
+                  app->keyAction = GLFW_RELEASE;
+               }
                break;
             }
          }
@@ -556,7 +570,7 @@ static void DrawComdLine( App *pApp, Panel *pPanel )
    int height = pApp->height;
 
    gtDrawTextBG( 0, height -18,
-      gtPadR( pPanel->currentDir, width / 9 + 1 ), 0x323232, 0x00FF00 );
+      gtPadR( gtAddStr( pPanel->currentDir, gtSubStr( pPanel->cmdLine, 1 + pPanel->cmdColNo, gtMaxCol( pApp ) + pPanel->cmdColNo ), NULL ), width / 9 + 1 ), 0x323232, 0x00FF00 );
 
    gtDrawText( strlen( pPanel->currentDir ) * 9 + pPanel->cmdCol * 9, height -18, "_", 0xFFFFFF );
 }
