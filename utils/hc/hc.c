@@ -285,9 +285,10 @@ int main()
                      activePanel->cmdColNo++;
                   }
                   printf( "Debugging app->keyChar %s \n", app->keyChar );
+                  app->keyChar[0] = '\0';
                   app->keyAction = GLFW_RELEASE;
+                  break;
                }
-               break;
             }
          }
 
