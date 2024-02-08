@@ -626,7 +626,7 @@ static void DrawComdLine( App *pApp, Panel *pPanel )
    gtDrawTextBG( 0, height -18,
       gtPadR( gtAddStr( pPanel->currentDir, gtSubStr( pPanel->cmdLine, 1 + pPanel->cmdColNo, gtMaxCol( pApp ) + pPanel->cmdColNo ), NULL ), width / 9 + 1 ), 0x323232, 0x00FF00 );
 
-   gtDrawText( strlen( pPanel->currentDir ) * 9 + pPanel->cmdCol * 9, height -18, "_", 0xFFFFFF );
+   gtDrawText( strlen( pPanel->currentDir ) * 9 + pPanel->cmdCol * 9, height -16, "_", 0xFFFFFF );
 }
 
 static void ChangeDir( Panel *pPanel )
