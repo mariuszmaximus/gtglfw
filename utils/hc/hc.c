@@ -129,6 +129,27 @@ int main()
                app->keyAction = GLFW_RELEASE;
                break;
 
+            case GLFW_KEY_DELETE:
+
+               if( activePanel->cmdCol >= 0 )
+               {
+                  activePanel->cmdLine = gtStuff( activePanel->cmdLine, activePanel->cmdCol + 1, 1, "" );
+               }
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_BACKSPACE:
+
+               if( activePanel->cmdCol > 0 )
+               {
+                  activePanel->cmdLine = gtStuff( activePanel->cmdLine, activePanel->cmdCol, 1, "" );
+                  activePanel->cmdCol--;
+               }
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
             case GLFW_KEY_DOWN:
 
                if( activePanel->rowBar < activePanel->maxRow -3 && activePanel->rowBar <= activePanel->nFilesCount -2 )
@@ -251,6 +272,7 @@ int main()
 
             default:
 
+               // FIXME
                if( app->keyChar[ 0 ] >= GLFW_KEY_SPACE || strcmp( app->keyChar, "" ) != 0 )
                {
                   if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) )
