@@ -15,7 +15,7 @@ int main()
       BEGINDRAWING( app );
 
          int startX = ( app->width - 54 ) / 2;
-         int startY = ( app->height - 18 ) /2;
+         int startY = ( app->height - 18 ) / 2;
 
          gtDrawTextBG( startX, startY, gtStuff( "ABCDEF", 2, 3, "ąćę" ), 0xFAFAFA, 0x0 ); // Result: AąćęEF
 
