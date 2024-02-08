@@ -57,22 +57,31 @@ int main()
 
             case GLFW_KEY_ENTER:
 
-               index = activePanel->rowBar + activePanel->rowNo;
-               if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
+               if( strlen( activePanel->cmdLine ) == 0 )
                {
-                  const char *commandLine = gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL );
-                  if( strcmp( activePanel->pFiles[ index ].attr, "AE" ) == 0 )
+                  index = activePanel->rowBar + activePanel->rowNo;
+                  if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
                   {
-                     gtRunApp( commandLine );
+                     const char *commandLine = gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL );
+                     if( strcmp( activePanel->pFiles[ index ].attr, "AE" ) == 0 )
+                     {
+                        gtRunApp( commandLine );
+                     }
+                     else
+                     {
+                        gtRun( commandLine );
+                     }
                   }
                   else
                   {
-                     gtRun( commandLine );
+                     ChangeDir( activePanel );
                   }
                }
                else
                {
-                  ChangeDir( activePanel );
+                  gtRun( activePanel->cmdLine );
+                  activePanel->cmdLine = "";
+                  activePanel->cmdCol = 0;
                }
 
                app->keyAction = GLFW_RELEASE;
@@ -191,10 +200,18 @@ int main()
                if( activePanel == leftPanel )
                {
                   activePanel = rightPanel;
+                  activePanel->cmdLine = leftPanel->cmdLine;
+                  activePanel->cmdCol  = leftPanel->cmdCol;
+                  leftPanel->cmdLine = "";
+                  leftPanel->cmdCol = 0;
                }
                else
                {
                   activePanel = leftPanel;
+                  activePanel->cmdLine = rightPanel->cmdLine;
+                  activePanel->cmdCol  = rightPanel->cmdCol;
+                  rightPanel->cmdLine = "";
+                  rightPanel->cmdCol = 0;
                }
                app->keyAction = GLFW_RELEASE;
                break;
