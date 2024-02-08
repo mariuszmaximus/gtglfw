@@ -186,29 +186,28 @@ const char *gtStrFormat( const char *str, const char *strTemplate )
 const char *gtSubStr( const char *str, int start, int count )
 {
    static char result[ 512 ];
-   int nSize = strlen_utf8( str );
+   int nSize = utf8_strlen( str );
 
    if( start > 0 )
    {
-      if( --start > nSize )
-         count = 0;
-      }
+      if( --start > nSize ) count = 0;
+   }
 
-      if( count > 0 )
+   if( count > 0 )
+   {
+      if( start < 0 )
       {
-         if( start < 0 )
-         {
-            start = nSize + start;
-         }
-         if( start < 0 )
-         {
-            start = 0;
-         }
-         if( start + count > nSize )
-         {
-            count = nSize - start;
-         }
+         start = nSize + start;
       }
+      if( start < 0 )
+      {
+         start = 0;
+      }
+      if( start + count > nSize )
+      {
+         count = nSize - start;
+      }
+   }
    else
    {
       if( start < 0 )
@@ -223,13 +222,15 @@ const char *gtSubStr( const char *str, int start, int count )
    }
 
    const char *byteStart = utf8_offset_to_pointer( str, start );
-   const char *byteEnd = utf8_offset_to_pointer( byteStart, count );
-   int byteCount = byteEnd - byteStart;
+   const char *byteEnd   = utf8_offset_to_pointer( byteStart, count );
 
-   if( byteCount > 511 ) byteCount = 511; // Limited to buffer size
-
-   strncpy( result, byteStart, byteCount );
-   result[ byteCount ] = '\0';
+   // Copy byte by byte with proper handling for UTF-8
+   size_t i = 0;
+   while( byteStart < byteEnd && i < 511 )
+   {
+      result[ i++ ] = *byteStart++;
+   }
+   result[ i ] = '\0';
 
    return result;
 }
@@ -309,36 +310,44 @@ int gtRAt( const char *search, const char *target )
    return 0;
 }
 
-const char *gt_Stuff( const char *string, size_t stringLen, size_t start, size_t delete, const char *insert, size_t insertLen )
+const char *gtStuff( const char *string, size_t start, size_t delete, const char *insert )
 {
    static char result[ 512 ];
 
-   // Konwersja pozycji
    if( start > 0 )
    {
-      start--;
+      if( --start > utf8_strlen( string ) ) delete = 0;
    }
 
-   // Ograniczenia dla parametrów
-   if( start > stringLen )
-   {
-      start = stringLen;
-   }
+   size_t len = utf8_strlen( string );
+   size_t insertLen = utf8_strlen( insert );
+   size_t resultSize = len + insertLen - delete;
 
-   if( delete > stringLen - start )
-   {
-      delete = stringLen - start;
-   }
-
-   // Sprawdzenie wielkości bez przepełnienia
-   size_t resultSize = stringLen + insertLen - delete;
    if( resultSize > 0 && resultSize < sizeof( result ) )
    {
-      // Budowa wynikowego ciągu
-      memcpy( result, string, start );
-      memcpy( result + start, insert, insertLen );
-      memcpy( result + start + insertLen, string + start + delete, stringLen - ( start + delete ) );
-      result[ resultSize ] = '\0';
+      const char *byteStart = utf8_offset_to_pointer( string, start );
+      size_t byteCount = len - ( start + delete );
+
+      // Kopiowanie bajtów z uwzględnieniem UTF-8
+      size_t i = 0;
+      while( i < 511 && string < byteStart )
+      {
+         result[ i++ ] = *string++;
+      }
+
+      // Kopiowanie wstawki
+      i += snprintf( result + i, 511 - i, "%s", insert );
+
+      // Pomijanie usuwanych bajtów
+      string = utf8_offset_to_pointer( string, delete );
+
+      // Kopiowanie reszty
+      while( i < 511 && byteCount-- )
+      {
+         result[ i++ ] = *string++;
+      }
+
+      result[ i ] = '\0';
 
       return result;
    }
@@ -346,9 +355,4 @@ const char *gt_Stuff( const char *string, size_t stringLen, size_t start, size_t
    {
       return "";
    }
-}
-
-const char *gtStuff( const char *string, size_t start, size_t delete, const char *insert )
-{
-   return gt_Stuff( string, strlen( string ), start, delete, insert, strlen( insert ) );
 }

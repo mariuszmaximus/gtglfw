@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <wchar.h>
 
 #if defined( _WIN32 ) || defined( _WIN64 )
    #include <direct.h>
@@ -209,7 +210,6 @@ const char *gtSubStr( const char *str, int start, int count );
 const char *gtLeft( const char *str, int count );
 const char *gtRight( const char *str, int count );
 int         gtRAt( const char *search, const char *target );
-const char *gt_Stuff( const char *string, size_t stringLen, size_t start, size_t delete, const char *insert, size_t insertLen );
 const char *gtStuff( const char *string, size_t start, size_t delete, const char *insert );
 
 // directory_functions.c
@@ -292,7 +292,8 @@ unsigned int  convert_hex_to_int( const char *hex );
 char         *gt_strdup( const char *str );
 size_t        strlen_utf8( const char* str );
 const char   *utf8_offset_to_pointer( const char *str, int offset );
-size_t encode_utf8( char* s, unsigned int ch );
+size_t        encode_utf8( char* s, unsigned int ch );
+size_t        utf8_strlen( const char *str );
 
 void GenerateShortcutName( char *buffer, int bufferSize, int key, int mods );
 

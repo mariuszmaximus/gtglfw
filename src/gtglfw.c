@@ -153,7 +153,7 @@ char *gt_strdup( const char *str )
    return new_str;
 }
 
-size_t strlen_utf8( const char* str )
+size_t strlen_utf8( const char *str )
 {
    size_t len = 0;
    unsigned char c;
@@ -170,14 +170,24 @@ size_t strlen_utf8( const char* str )
 const char *utf8_offset_to_pointer( const char *str, int offset )
 {
    const char *s = str;
+   mbstate_t state = { 0 };
+
    while( offset > 0 && *s )
    {
-      if( ( *s & 0xc0 ) != 0x80 )
+      wchar_t wc;
+      size_t bytes = mbrtowc( &wc, s, MB_CUR_MAX, &state );
+      if( bytes == ( size_t ) -1 || bytes == ( size_t ) -2 )
+      {
+         // Invalid or incomplete character, skip it
+         s++;
+      }
+      else
       {
          offset--;
+         s += bytes;
       }
-      s++;
    }
+
    return s;
 }
 
@@ -209,10 +219,36 @@ size_t encode_utf8( char* s, unsigned int ch )
    return count;
 }
 
+size_t utf8_strlen( const char *str )
+{
+   size_t len = 0;
+   mbstate_t state = { 0 };
+
+   while( *str )
+   {
+      wchar_t wc;
+      size_t bytes = mbrtowc( &wc, str, MB_CUR_MAX, &state );
+      if( bytes == ( size_t ) -1 || bytes == ( size_t ) -2 )
+      {
+         // Invalid or incomplete character, skip it
+         str++;
+      }
+      else
+      {
+         len++;
+         str += bytes;
+      }
+   }
+
+   return len;
+}
+
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 // API functions
 App *gtCreateWindow( int width, int height, const char *title )
 {
+   setlocale( LC_ALL, "" );
+
    if( ! glfwInit() )
    {
       exit( EXIT_FAILURE );
