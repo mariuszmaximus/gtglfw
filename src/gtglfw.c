@@ -37,7 +37,7 @@ static void key_callback( GLFWwindow *window, int key, int scancode, int action,
    pApp->keyMods     = mods;
 }
 
-static void char_callback( GLFWwindow* window, unsigned int codepoint )
+static void char_callback( GLFWwindow *window, unsigned int codepoint )
 {
    App *pApp = glfwGetWindowUserPointer( window );
 
