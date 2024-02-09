@@ -79,7 +79,12 @@ int main()
                }
                else
                {
-                  gtRun( activePanel->cmdLine );
+                  int result = system( activePanel->cmdLine );
+                  if( result != 0 )
+                  {
+                     printf( "Error executing command" );
+                  }
+
                   activePanel->cmdLine = "";
                   activePanel->cmdCol = 0;
                }
