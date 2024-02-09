@@ -87,6 +87,7 @@ int main()
 
                   activePanel->cmdLine = "";
                   activePanel->cmdCol = 0;
+                  RefreshPanel( activePanel );
                }
 
                app->keyAction = GLFW_RELEASE;
@@ -613,6 +614,24 @@ static const char *SelectColor( const char *attr, bool state )
    else
    {
       return "EAEAEA/323232"; // Kolor dla pozostałych plików
+   }
+}
+
+
+static void RefreshPanel( Panel *pPanel )
+{
+   if( leftPanel->currentDir == rightPanel->currentDir )
+   {
+      PanelFetchList( leftPanel, leftPanel->currentDir );
+      PanelFetchList( rightPanel, rightPanel->currentDir );
+
+      DrawPanel( leftPanel );
+      DrawPanel( rightPanel );
+   }
+   else
+   {
+      PanelFetchList( pPanel, pPanel->currentDir );
+      DrawPanel( pPanel );
    }
 }
 
