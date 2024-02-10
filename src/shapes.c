@@ -7,7 +7,7 @@
 //* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 void gtPoint( int x, int y, unsigned int color )
 {
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    glPointSize( 1.0 );
    glBegin( GL_POINTS );
       glVertex2i( x, y + 1 );
@@ -22,7 +22,7 @@ void gtPointSize( int x, int y, int pointSize, unsigned int color )
       pointSize = 1;
    }
 
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    glPointSize( pointSize );
    glBegin( GL_POINTS );
       glVertex2i( x, y + 1 );
@@ -31,7 +31,7 @@ void gtPointSize( int x, int y, int pointSize, unsigned int color )
 
 void gtLine( int x, int y, int width, int height, unsigned int color )
 {
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    glBegin( GL_LINES );
       glVertex2i( x, y );
       glVertex2i( x + width, y + height );
@@ -46,7 +46,7 @@ void gtLineWidth( int x, int y, int width, int height, int lineWidth, unsigned i
       lineWidth = 1;
    }
 
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    glLineWidth( lineWidth );
    glBegin( GL_LINES );
       glVertex2i( x, y );
@@ -56,7 +56,7 @@ void gtLineWidth( int x, int y, int width, int height, int lineWidth, unsigned i
 
 void gtRect( int x, int y, int width, int height, unsigned int color )
 {
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    glBegin( GL_LINE_LOOP );
       glVertex2i( x + 1, y );
       glVertex2i( x + width, y );
@@ -73,7 +73,7 @@ void gtRectWidthToInside( int x, int y, int width, int height, int numberLines, 
       numberLines = 1;
    }
 
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    for( int i = 0; i < numberLines; i++ )
    {
       // Top
@@ -97,7 +97,7 @@ void gtRectWidthToCenter( int x, int y, int width, int height, int numberLines, 
 
    int halfLines = numberLines / 2;
 
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    for( int i = 0; i < halfLines; i++ )
    {
       // Drawing inwards
@@ -133,7 +133,7 @@ void gtRectWidthToOutside( int x, int y, int width, int height, int numberLines,
       numberLines = 1;
    }
 
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    for( int i = 0; i < numberLines; i++ )
    {
       // Top
@@ -149,7 +149,7 @@ void gtRectWidthToOutside( int x, int y, int width, int height, int numberLines,
 
 void gtFillgtRect( int x, int y, int width, int height, unsigned int color )
 {
-   set_color_from_hex( color );
+   gt_set_color_from_hex( color );
    glBegin( GL_QUADS );
    glVertex2f( x, y );
    glVertex2f( x + width, y );

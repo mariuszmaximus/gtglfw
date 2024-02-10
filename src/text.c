@@ -56,7 +56,7 @@ void gtDrawText( int x, int y, const char *text, unsigned int foreground )
 
       unsigned int *bitmap = fontData[ codepoint ];
 
-      set_color_from_hex( foreground );
+      gt_set_color_from_hex( foreground );
       for( int row = 0; row < BITMAP_HEIGHT; row++ )
       {
          unsigned int value = bitmap[ row ];
@@ -115,7 +115,7 @@ void gtDrawTextBG( int x, int y, const char *text, unsigned int background, unsi
 
       unsigned int *bitmap = fontData[ codepoint ];
 
-      set_color_from_hex( background );
+      gt_set_color_from_hex( background );
       glBegin( GL_QUADS );
          glVertex2i( x, y );
          glVertex2i( x + BITMAP_WIDTH, y );
@@ -123,7 +123,7 @@ void gtDrawTextBG( int x, int y, const char *text, unsigned int background, unsi
          glVertex2i( x, y - BITMAP_HEIGHT );
       glEnd();
 
-      set_color_from_hex( foreground );
+      gt_set_color_from_hex( foreground );
       for( int row = 0; row < BITMAP_HEIGHT; row++ )
       {
          unsigned int value = bitmap[ row ];
@@ -197,8 +197,8 @@ void gtDispOutAt( int col, int row, const char *text, const char *color )
             strncpy( backgroundHex, color, separator - color );
             strncpy( foregroundHex, separator + 1, 6 );
 
-            background = convert_hex_to_int( backgroundHex );
-            foreground = convert_hex_to_int( foregroundHex );
+            background = gt_convert_hex_to_int( backgroundHex );
+            foreground = gt_convert_hex_to_int( foregroundHex );
          }
          else
          {
@@ -206,7 +206,7 @@ void gtDispOutAt( int col, int row, const char *text, const char *color )
          }
       }
       //---
-      set_color_from_hex( background );
+      gt_set_color_from_hex( background );
       glBegin( GL_QUADS );
          glVertex2i( x, y );
          glVertex2i( x + BITMAP_WIDTH, y );
@@ -214,7 +214,7 @@ void gtDispOutAt( int col, int row, const char *text, const char *color )
          glVertex2i( x, y - BITMAP_HEIGHT );
       glEnd();
 
-      set_color_from_hex( foreground );
+      gt_set_color_from_hex( foreground );
 
       for( int row = 0; row < BITMAP_HEIGHT; row++ )
       {

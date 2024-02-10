@@ -3,7 +3,7 @@
 
 #include <errno.h>
 #include <limits.h>
-#include <locale.h> 
+#include <locale.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -211,7 +211,7 @@ const char *gtSubStr( const char *str, int start, int count );
 const char *gtLeft( const char *str, int count );
 const char *gtRight( const char *str, int count );
 int         gtRAt( const char *search, const char *target );
-const char *gtStuff( const char *string, size_t start, size_t delete, const char *insert );
+const char *gtStuff( const char *str, size_t start, size_t delete, const char *insert );
 
 // directory_functions.c
 bool        gtIsValidPath( const char *path );
@@ -287,14 +287,14 @@ void gtDispOutAt( int col, int row, const char *text, const char *color );
 
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 // internal
-void          check_open_gl_error( const char *stmt, const char *fname, int line, GLenum *errCode );
-void          set_color_from_hex( unsigned int hexColor );
-unsigned int  convert_hex_to_int( const char *hex );
+void          gt_check_open_gl_error( const char *stmt, const char *fname, int line, GLenum *errCode );
+void          gt_set_color_from_hex( unsigned int hexColor );
+unsigned int  gt_convert_hex_to_int( const char *hex );
 char         *gt_strdup( const char *str );
-size_t        strlen_utf8( const char* str );
-const char   *utf8_offset_to_pointer( const char *str, int offset );
-size_t        encode_utf8( char* s, unsigned int ch );
-size_t        utf8_strlen( const char *str );
+const char   *gt_utf8_offset_to_pointer( const char *str, int character_offset );
+size_t        gt_utf8_encode( char *s, unsigned int ch );
+size_t        gt_utf8_strlen_single_byte( const char *str );
+size_t        gt_utf8_strlen_multibyte( const char *str );
 
 void GenerateShortcutName( char *buffer, int bufferSize, int key, int mods );
 
@@ -302,7 +302,7 @@ void GenerateShortcutName( char *buffer, int bufferSize, int key, int mods );
 // macros
 #define REPORT_OPENGL_ERROR( stmt ) \
    GLenum errCode; \
-   check_open_gl_error( stmt, __FILE__, __LINE__, &errCode ); \
+   gt_check_open_gl_error( stmt, __FILE__, __LINE__, &errCode ); \
    if( errCode != GL_NO_ERROR ) return;
 
 #define MAX( a, b ) ( ( a ) < ( b ) ? ( b ) : ( a ) )

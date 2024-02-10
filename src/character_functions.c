@@ -58,7 +58,7 @@ int gtAt( const char *search, const char *target )
 const char *gtPadL( const char *str, int length )
 {
    static char result[ 512 ];
-   int len = strlen_utf8( str );
+   int len = gt_utf8_strlen_single_byte( str );
    int byteLen = strlen( str );
 
    if( len >= length )
@@ -82,7 +82,7 @@ const char *gtPadL( const char *str, int length )
 const char *gtPadC( const char *str, int length )
 {
    static char result[ 512 ];
-   int len = strlen_utf8( str );
+   int len = gt_utf8_strlen_single_byte( str );
    int byteLen = strlen( str );
 
    if( len >= length )
@@ -110,7 +110,7 @@ const char *gtPadC( const char *str, int length )
 const char *gtPadR( const char *str, int length )
 {
    static char result[ 512 ];
-   int len = strlen_utf8( str );
+   int len = gt_utf8_strlen_single_byte( str );
    int byteLen = strlen( str );
 
    if( len >= length )
@@ -186,7 +186,7 @@ const char *gtStrFormat( const char *str, const char *strTemplate )
 const char *gtSubStr( const char *str, int start, int count )
 {
    static char result[ 512 ];
-   int nSize = utf8_strlen( str );
+   int nSize = gt_utf8_strlen_multibyte( str );
 
    if( start > 0 )
    {
@@ -221,8 +221,8 @@ const char *gtSubStr( const char *str, int start, int count )
       count = nSize - start;
    }
 
-   const char *byteStart = utf8_offset_to_pointer( str, start );
-   const char *byteEnd   = utf8_offset_to_pointer( byteStart, count );
+   const char *byteStart = gt_utf8_offset_to_pointer( str, start );
+   const char *byteEnd   = gt_utf8_offset_to_pointer( byteStart, count );
 
    // Copy byte by byte with proper handling for UTF-8
    size_t i = 0;
@@ -238,7 +238,7 @@ const char *gtSubStr( const char *str, int start, int count )
 const char *gtLeft( const char *str, int count )
 {
    static char result[ 512 ];
-   int len = strlen_utf8( str );
+   int len = gt_utf8_strlen_single_byte( str );
 
    if( count <= 0 )
    {
@@ -250,7 +250,7 @@ const char *gtLeft( const char *str, int count )
       count = len; // To avoid going beyond the string
    }
 
-   const char *byteEnd = utf8_offset_to_pointer( str, count );
+   const char *byteEnd = gt_utf8_offset_to_pointer( str, count );
    int byteCount = byteEnd - str;
 
    if( byteCount > 511 ) byteCount = 511; // Limited to buffer size
@@ -264,7 +264,7 @@ const char *gtLeft( const char *str, int count )
 const char *gtRight( const char *str, int count )
 {
    static char result[ 512 ];
-   int len = strlen_utf8( str );
+   int len = gt_utf8_strlen_single_byte( str );
 
    if( count <= 0 )
    {
@@ -276,7 +276,7 @@ const char *gtRight( const char *str, int count )
       count = len; // To avoid going beyond the string
    }
 
-   const char *byteStart = utf8_offset_to_pointer( str, len - count );
+   const char *byteStart = gt_utf8_offset_to_pointer( str, len - count );
    int byteCount = str + strlen( str ) - byteStart;
 
    if( byteCount > 511 ) byteCount = 511; // Limited to buffer size
@@ -289,8 +289,8 @@ const char *gtRight( const char *str, int count )
 
 int gtRAt( const char *search, const char *target )
 {
-   int targetLen = strlen_utf8( target );
-   int searchLen = strlen_utf8( search );
+   int targetLen = gt_utf8_strlen_single_byte( target );
+   int searchLen = gt_utf8_strlen_single_byte( search );
 
    if( searchLen > targetLen )
    {
@@ -299,7 +299,7 @@ int gtRAt( const char *search, const char *target )
 
    for( int i = targetLen - searchLen; i >= 0; i-- )
    {
-      const char *subString = utf8_offset_to_pointer( target, i );
+      const char *subString = gt_utf8_offset_to_pointer( target, i );
 
       if( strncmp( subString, search, strlen( search ) ) == 0 )
       {
@@ -310,41 +310,41 @@ int gtRAt( const char *search, const char *target )
    return 0;
 }
 
-const char *gtStuff( const char *string, size_t start, size_t delete, const char *insert )
+const char *gtStuff( const char *str, size_t start, size_t delete, const char *insert )
 {
    static char result[ 512 ];
 
    if( start > 0 )
    {
-      if( --start > utf8_strlen( string ) ) delete = 0;
+      if( --start > gt_utf8_strlen_multibyte( str ) ) delete = 0;
    }
 
-   size_t len = utf8_strlen( string );
-   size_t insertLen = utf8_strlen( insert );
+   size_t len = gt_utf8_strlen_multibyte( str );
+   size_t insertLen = gt_utf8_strlen_multibyte( insert );
    size_t resultSize = len + insertLen - delete;
 
    if( resultSize > 0 && resultSize < sizeof( result ) )
    {
-      const char *byteStart = utf8_offset_to_pointer( string, start );
+      const char *byteStart = gt_utf8_offset_to_pointer( str, start );
       size_t byteCount = len - ( start + delete );
 
       // Kopiowanie bajtów z uwzględnieniem UTF-8
       size_t i = 0;
-      while( i < 511 && string < byteStart )
+      while( i < 511 && str < byteStart )
       {
-         result[ i++ ] = *string++;
+         result[ i++ ] = *str++;
       }
 
       // Kopiowanie wstawki
       i += snprintf( result + i, 511 - i, "%s", insert );
 
       // Pomijanie usuwanych bajtów
-      string = utf8_offset_to_pointer( string, delete );
+      str = gt_utf8_offset_to_pointer( str, delete );
 
       // Kopiowanie reszty
       while( i < 511 && byteCount-- )
       {
-         result[ i++ ] = *string++;
+         result[ i++ ] = *str++;
       }
 
       result[ i ] = '\0';

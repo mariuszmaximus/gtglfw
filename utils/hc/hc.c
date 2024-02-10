@@ -594,7 +594,7 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    SafeStrCopy( fileTime, gtPadL( time, 8 ), sizeof( fileTime ) );
 
    size_t fileSizeLength = IIF( fileSize[ 0 ] != '\0', strnlen( fileSize, longestSize ), 0 );
-   int spacesNeeded = pPanel->maxCol - strlen_utf8( fileName ) - fileSizeLength - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) - 5;
+   int spacesNeeded = pPanel->maxCol - gt_utf8_strlen_single_byte( fileName ) - fileSizeLength - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) - 5;
 
    snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s %s", fileName, spacesNeeded, "", fileSize, fileAttr, fileDate, fileTime );
 
@@ -616,7 +616,6 @@ static const char *SelectColor( const char *attr, bool state )
       return "EAEAEA/323232"; // Kolor dla pozostałych plików
    }
 }
-
 
 static void RefreshPanel( Panel *pPanel )
 {
