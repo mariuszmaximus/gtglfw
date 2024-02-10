@@ -647,8 +647,9 @@ static void DrawComdLine( App *pApp, Panel *pPanel )
    int width = pApp->width;
    int height = pApp->height;
 
+   const char *cmdLinePart = gtSubStr( pPanel->cmdLine, 1 + pPanel->cmdColNo, gtMaxCol( pApp ) + pPanel->cmdColNo );
    gtDrawTextBG( 0, height -18,
-      gtPadR( gtAddStr( pPanel->currentDir, gtSubStr( pPanel->cmdLine, 1 + pPanel->cmdColNo, gtMaxCol( pApp ) + pPanel->cmdColNo ), NULL ), width / 9 + 1 ), 0x323232, 0x00FF00 );
+      gtPadR( gtAddStr( pPanel->currentDir, cmdLinePart, NULL ), width / 9 + 1 ), 0x323232, 0x00FF00 );
 
    gtDrawText( strlen( pPanel->currentDir ) * 9 + pPanel->cmdCol * 9, height -16, "_", 0xFFFFFF );
 }
