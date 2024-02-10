@@ -356,3 +356,18 @@ const char *gtStuff( const char *str, size_t start, size_t delete, const char *i
       return "";
    }
 }
+
+const char *gtOs( void )
+{
+   #if defined( _WIN32) || defined( _WIN64 )
+      return "Windows";
+   #elif defined( __APPLE__ ) || defined( __MACH__ )
+      return "macOS";
+   #elif defined( __linux__ )
+      return "Linux";
+   #elif defined( __FreeBSD__ ) || defined( __NetBSD__ ) || defined( __OpenBSD__ ) || defined( __bsdi__ ) || defined( __DragonFly__ )
+      return "BSD";
+   #else
+      return "Unknown";
+   #endif
+}

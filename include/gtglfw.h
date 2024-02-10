@@ -212,6 +212,7 @@ const char *gtLeft( const char *str, int count );
 const char *gtRight( const char *str, int count );
 int         gtRAt( const char *search, const char *target );
 const char *gtStuff( const char *str, size_t start, size_t delete, const char *insert );
+const char *gtOs( void );
 
 // directory_functions.c
 bool        gtIsValidPath( const char *path );
