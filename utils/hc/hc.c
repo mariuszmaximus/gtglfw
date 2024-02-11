@@ -278,7 +278,7 @@ int main()
 
             default:
 
-               // FIXME
+               // TODO
                if( app->keyChar[ 0 ] >= GLFW_KEY_SPACE || strcmp( app->keyChar, "" ) != 0 )
                {
                   if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) )
@@ -646,12 +646,26 @@ static void DrawComdLine( App *pApp, Panel *pPanel )
 {
    int width = pApp->width;
    int height = pApp->height;
+   const char *promptEnd;
 
+   if( strcmp( "Windows", gtOs() ) == 0 )
+   {
+      promptEnd = ">";
+   }
+   else
+   {
+      promptEnd = "$ ";
+   }
+
+   char *currentDir = gtDirDeleteLastSeparator( pPanel->currentDir );
+   strcat( currentDir, promptEnd );
+
+   // FIXME
    const char *cmdLinePart = gtSubStr( pPanel->cmdLine, 1 + pPanel->cmdColNo, gtMaxCol( pApp ) + pPanel->cmdColNo );
    gtDrawTextBG( 0, height -18,
-      gtPadR( gtAddStr( pPanel->currentDir, cmdLinePart, NULL ), width / 9 + 1 ), 0x323232, 0x00FF00 );
+      gtPadR( gtAddStr( currentDir, cmdLinePart, NULL ), width / 9 + 1 ), 0x323232, 0x00FF00 );
 
-   gtDrawText( strlen( pPanel->currentDir ) * 9 + pPanel->cmdCol * 9, height -16, "_", 0xFFFFFF );
+   gtDrawText( strlen( currentDir ) * 9 + pPanel->cmdCol * 9, height -16, "_", 0xFFFFFF );
 }
 
 static void ChangeDir( Panel *pPanel )
