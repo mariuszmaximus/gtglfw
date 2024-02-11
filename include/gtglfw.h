@@ -220,7 +220,7 @@ bool        gtDirExists( const char *path );
 int         gtDirMake( const char *path );
 int         gtDirRemove( const char *path );
 const char *gtDirDeleteLastPath( const char *path );
-const char *gtDirDeleteLastSeparator( const char *path );
+char       *gtDirDeleteLastSeparator( const char *path );
 const char *gtDirLastName( const char *path );
 const char *gtGetCurDir( void );
 FileInfo   *gtDirectory( const char *currentDir, int *size );

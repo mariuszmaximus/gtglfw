@@ -90,17 +90,16 @@ const char *gtDirDeleteLastPath( const char *path )
    return result;
 }
 
-const char *gtDirDeleteLastSeparator( const char *path )
+char *gtDirDeleteLastSeparator( const char *path )
 {
    static char result[ 512 ];
-   char *lastSeparator;
 
-   strncpy( result, path, sizeof( result ) - 1 );
-   result[ sizeof( result ) - 1 ] = '\0';
+   strncpy( result, path, 511 );
+   result[ 511 ] = '\0';
 
    char separator = gtPathSeparator()[0];
 
-   lastSeparator = strrchr( result, separator );
+   char *lastSeparator = strrchr( result, separator );
    if( lastSeparator != NULL )
    {
       if( lastSeparator != result )
