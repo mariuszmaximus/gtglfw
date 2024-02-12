@@ -95,11 +95,11 @@ int main()
 
             case GLFW_KEY_RIGHT:
 
-               if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) )
+               if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && ( size_t )activePanel->cmdCol < gt_utf8_strlen_single_byte( activePanel->cmdLine ) )
                {
                   activePanel->cmdCol++;
                }
-               else if( activePanel->cmdColNo + ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) )
+               else if( activePanel->cmdColNo + ( size_t )activePanel->cmdCol < gt_utf8_strlen_single_byte( activePanel->cmdLine ) )
                {
                   activePanel->cmdColNo++;
                }
@@ -130,7 +130,7 @@ int main()
 
             case GLFW_KEY_END:
 
-               activePanel->cmdCol = strlen( activePanel->cmdLine );
+               activePanel->cmdCol = gt_utf8_strlen_single_byte( activePanel->cmdLine );
 
                app->keyAction = GLFW_RELEASE;
                break;
