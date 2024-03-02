@@ -3,12 +3,14 @@
 
 #include <errno.h>
 #include <limits.h>
+#include <locale.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <wchar.h>
 
 #if defined( _WIN32 ) || defined( _WIN64 )
    #include <direct.h>
@@ -209,8 +211,8 @@ const char *gtSubStr( const char *str, int start, int count );
 const char *gtLeft( const char *str, int count );
 const char *gtRight( const char *str, int count );
 int         gtRAt( const char *search, const char *target );
-const char *gt_Stuff( const char *string, size_t stringLen, size_t start, size_t delete, const char *insert, size_t insertLen );
-const char *gtStuff( const char *string, size_t start, size_t delete, const char *insert );
+const char *gtStuff( const char *str, size_t start, size_t delete, const char *insert );
+const char *gtOs( void );
 
 // directory_functions.c
 bool        gtIsValidPath( const char *path );
@@ -218,6 +220,7 @@ bool        gtDirExists( const char *path );
 int         gtDirMake( const char *path );
 int         gtDirRemove( const char *path );
 const char *gtDirDeleteLastPath( const char *path );
+char       *gtDirDeleteLastSeparator( const char *path );
 const char *gtDirLastName( const char *path );
 const char *gtGetCurDir( void );
 FileInfo   *gtDirectory( const char *currentDir, int *size );
@@ -286,13 +289,14 @@ void gtDispOutAt( int col, int row, const char *text, const char *color );
 
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 // internal
-void          check_open_gl_error( const char *stmt, const char *fname, int line, GLenum *errCode );
-void          set_color_from_hex( unsigned int hexColor );
-unsigned int  convert_hex_to_int( const char *hex );
+void          gt_check_open_gl_error( const char *stmt, const char *fname, int line, GLenum *errCode );
+void          gt_set_color_from_hex( unsigned int hexColor );
+unsigned int  gt_convert_hex_to_int( const char *hex );
 char         *gt_strdup( const char *str );
-size_t        strlen_utf8( const char* str );
-const char   *utf8_offset_to_pointer( const char *str, int offset );
-size_t encode_utf8( char* s, unsigned int ch );
+const char   *gt_utf8_offset_to_pointer( const char *str, int character_offset );
+size_t        gt_utf8_encode( char *s, unsigned int ch );
+size_t        gt_utf8_strlen_single_byte( const char *str );
+size_t        gt_utf8_strlen_multibyte( const char *str );
 
 void GenerateShortcutName( char *buffer, int bufferSize, int key, int mods );
 
@@ -300,7 +304,7 @@ void GenerateShortcutName( char *buffer, int bufferSize, int key, int mods );
 // macros
 #define REPORT_OPENGL_ERROR( stmt ) \
    GLenum errCode; \
-   check_open_gl_error( stmt, __FILE__, __LINE__, &errCode ); \
+   gt_check_open_gl_error( stmt, __FILE__, __LINE__, &errCode ); \
    if( errCode != GL_NO_ERROR ) return;
 
 #define MAX( a, b ) ( ( a ) < ( b ) ? ( b ) : ( a ) )

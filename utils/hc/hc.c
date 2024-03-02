@@ -57,22 +57,37 @@ int main()
 
             case GLFW_KEY_ENTER:
 
-               index = activePanel->rowBar + activePanel->rowNo;
-               if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
+               if( strlen( activePanel->cmdLine ) == 0 )
                {
-                  const char *commandLine = gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL );
-                  if( strcmp( activePanel->pFiles[ index ].attr, "AE" ) == 0 )
+                  index = activePanel->rowBar + activePanel->rowNo;
+                  if( gtAt( "D", activePanel->pFiles[ index ].attr ) == 0 )
                   {
-                     gtRunApp( commandLine );
+                     const char *commandLine = gtAddStr( activePanel->currentDir, activePanel->pFiles[ index ].name, NULL );
+                     if( strcmp( activePanel->pFiles[ index ].attr, "AE" ) == 0 )
+                     {
+                        gtRunApp( commandLine );
+                     }
+                     else
+                     {
+                        gtRun( commandLine );
+                     }
                   }
                   else
                   {
-                     gtRun( commandLine );
+                     ChangeDir( activePanel );
                   }
                }
                else
                {
-                  ChangeDir( activePanel );
+                  int result = system( activePanel->cmdLine );
+                  if( result != 0 )
+                  {
+                     printf( "Error executing command" );
+                  }
+
+                  activePanel->cmdLine = "";
+                  activePanel->cmdCol = 0;
+                  RefreshPanel( activePanel );
                }
 
                app->keyAction = GLFW_RELEASE;
@@ -80,11 +95,11 @@ int main()
 
             case GLFW_KEY_RIGHT:
 
-               if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) - 1 )
+               if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) && ( size_t )activePanel->cmdCol < gt_utf8_strlen_single_byte( activePanel->cmdLine ) )
                {
                   activePanel->cmdCol++;
                }
-               else if( activePanel->cmdColNo + ( size_t )activePanel->cmdCol < strlen( activePanel->cmdLine ) - 1 )
+               else if( activePanel->cmdColNo + ( size_t )activePanel->cmdCol < gt_utf8_strlen_single_byte( activePanel->cmdLine ) )
                {
                   activePanel->cmdColNo++;
                }
@@ -101,6 +116,41 @@ int main()
                else if( activePanel->cmdColNo >= 1 )
                {
                   activePanel->cmdColNo--;
+               }
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_HOME:
+
+               activePanel->cmdCol = 0;
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_END:
+
+               activePanel->cmdCol = gt_utf8_strlen_single_byte( activePanel->cmdLine );
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_DELETE:
+
+               if( activePanel->cmdCol >= 0 )
+               {
+                  activePanel->cmdLine = gtStuff( activePanel->cmdLine, activePanel->cmdCol + 1, 1, "" );
+               }
+
+               app->keyAction = GLFW_RELEASE;
+               break;
+
+            case GLFW_KEY_BACKSPACE:
+
+               if( activePanel->cmdCol > 0 )
+               {
+                  activePanel->cmdLine = gtStuff( activePanel->cmdLine, activePanel->cmdCol, 1, "" );
+                  activePanel->cmdCol--;
                }
 
                app->keyAction = GLFW_RELEASE;
@@ -177,10 +227,18 @@ int main()
                if( activePanel == leftPanel )
                {
                   activePanel = rightPanel;
+                  activePanel->cmdLine = leftPanel->cmdLine;
+                  activePanel->cmdCol  = leftPanel->cmdCol;
+                  leftPanel->cmdLine = "";
+                  leftPanel->cmdCol = 0;
                }
                else
                {
                   activePanel = leftPanel;
+                  activePanel->cmdLine = rightPanel->cmdLine;
+                  activePanel->cmdCol  = rightPanel->cmdCol;
+                  rightPanel->cmdLine = "";
+                  rightPanel->cmdCol = 0;
                }
                app->keyAction = GLFW_RELEASE;
                break;
@@ -219,7 +277,24 @@ int main()
                break;
 
             default:
-               break;
+
+               // TODO
+               if( app->keyChar[ 0 ] >= GLFW_KEY_SPACE || strcmp( app->keyChar, "" ) != 0 )
+               {
+                  if( ( size_t )activePanel->cmdCol < gtMaxCol( app ) - strlen( activePanel->currentDir ) )
+                  {
+                     activePanel->cmdLine = gtStuff( activePanel->cmdLine, activePanel->cmdCol + activePanel->cmdColNo + 1, 0, app->keyChar );
+                     activePanel->cmdCol++;
+                  }
+                  else
+                  {
+                     activePanel->cmdColNo++;
+                  }
+                  printf( "Debugging app->keyChar %s \n", app->keyChar );
+                  app->keyChar[0] = '\0';
+                  app->keyAction = GLFW_RELEASE;
+                  break;
+               }
             }
          }
 
@@ -519,7 +594,7 @@ static const char *PaddedString( Panel *pPanel, int longestName, int longestSize
    SafeStrCopy( fileTime, gtPadL( time, 8 ), sizeof( fileTime ) );
 
    size_t fileSizeLength = IIF( fileSize[ 0 ] != '\0', strnlen( fileSize, longestSize ), 0 );
-   int spacesNeeded = pPanel->maxCol - strlen_utf8( fileName ) - fileSizeLength - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) - 5;
+   int spacesNeeded = pPanel->maxCol - gt_utf8_strlen_single_byte( fileName ) - fileSizeLength - strlen( fileAttr ) - strlen( fileDate ) - strlen( fileTime ) - 5;
 
    snprintf( formattedLine, sizeof( formattedLine ), "%s%*s%s %s %s %s", fileName, spacesNeeded, "", fileSize, fileAttr, fileDate, fileTime );
 
@@ -542,6 +617,23 @@ static const char *SelectColor( const char *attr, bool state )
    }
 }
 
+static void RefreshPanel( Panel *pPanel )
+{
+   if( leftPanel->currentDir == rightPanel->currentDir )
+   {
+      PanelFetchList( leftPanel, leftPanel->currentDir );
+      PanelFetchList( rightPanel, rightPanel->currentDir );
+
+      DrawPanel( leftPanel );
+      DrawPanel( rightPanel );
+   }
+   else
+   {
+      PanelFetchList( pPanel, pPanel->currentDir );
+      DrawPanel( pPanel );
+   }
+}
+
 void SafeStrCopy( char *dest, const char *src, size_t destSize )
 {
    if( destSize == 0 ) return;
@@ -554,11 +646,26 @@ static void DrawComdLine( App *pApp, Panel *pPanel )
 {
    int width = pApp->width;
    int height = pApp->height;
+   const char *promptEnd;
 
+   if( strcmp( "Windows", gtOs() ) == 0 )
+   {
+      promptEnd = ">";
+   }
+   else
+   {
+      promptEnd = "$ ";
+   }
+
+   char *currentDir = gtDirDeleteLastSeparator( pPanel->currentDir );
+   strcat( currentDir, promptEnd );
+
+   // FIXME
+   const char *cmdLinePart = gtSubStr( pPanel->cmdLine, 1 + pPanel->cmdColNo, gtMaxCol( pApp ) + pPanel->cmdColNo );
    gtDrawTextBG( 0, height -18,
-      gtPadR( pPanel->currentDir, width / 9 + 1 ), 0x323232, 0x00FF00 );
+      gtPadR( gtAddStr( currentDir, cmdLinePart, NULL ), width / 9 + 1 ), 0x323232, 0x00FF00 );
 
-   gtDrawText( strlen( pPanel->currentDir ) * 9 + pPanel->cmdCol * 9, height -18, "_", 0xFFFFFF );
+   gtDrawText( strlen( currentDir ) * 9 + pPanel->cmdCol * 9, height -16, "_", 0xFFFFFF );
 }
 
 static void ChangeDir( Panel *pPanel )

@@ -37,7 +37,7 @@ int gtDirMake( const char *path )
          return 0;
       if( GetLastError() == ERROR_ALREADY_EXISTS )
          return EEXIST;
-      return -1;
+      return - 1;
     #else
       if( mkdir( path, 0755 ) == 0 )
          return 0;
@@ -52,7 +52,7 @@ int gtDirRemove( const char *path )
          return 0; // Sukces
       if( GetLastError() == ERROR_DIRECTORY )
          return EEXIST;
-      return -1;
+      return - 1;
     #else
       if( rmdir( path ) == 0 )
          return 0;
@@ -65,8 +65,8 @@ const char *gtDirDeleteLastPath( const char *path )
    static char result[ 512 ];
    char *lastPath;
 
-   strncpy( result, path, sizeof( result ) -1 );
-   result[ sizeof( result ) -1 ] = '\0';
+   strncpy( result, path, sizeof( result ) - 1 );
+   result[ sizeof( result ) - 1 ] = '\0';
 
    char separator = gtPathSeparator()[0];
 
@@ -90,6 +90,27 @@ const char *gtDirDeleteLastPath( const char *path )
    return result;
 }
 
+char *gtDirDeleteLastSeparator( const char *path )
+{
+   static char result[ 512 ];
+
+   strncpy( result, path, 511 );
+   result[ 511 ] = '\0';
+
+   char separator = gtPathSeparator()[0];
+
+   char *lastSeparator = strrchr( result, separator );
+   if( lastSeparator != NULL )
+   {
+      if( lastSeparator != result )
+      {
+         *lastSeparator = '\0';
+      }
+   }
+
+   return result;
+}
+
 const char *gtDirLastName( const char *path )
 {
    static char result[ 512 ];
@@ -103,16 +124,16 @@ const char *gtDirLastName( const char *path )
 
    char separator = gtPathSeparator()[ 0 ];
 
-   if( path[ pathLength -1 ] == separator )
+   if( path[ pathLength - 1 ] == separator )
    {
       pathLength--;
    }
 
-   for( int i = pathLength -1; i >= 0; i-- )
+   for( int i = pathLength - 1; i >= 0; i-- )
    {
       if( path[ i ] == separator )
       {
-         int length = pathLength - i -1;
+         int length = pathLength - i - 1;
          strncpy( result, path + i + 1, length );
          result[ length ] = '\0';
          return result;
@@ -136,18 +157,18 @@ const char *gtGetCurDir()
       char separator = gtPathSeparator()[0];
 
       // Checking if there is already a separator at the end of the path
-      if( result[ len -1 ] != separator )
+      if( result[ len - 1 ] != separator )
       {
          if( len < ( sizeof( result ) - 2 ) )
          {
             result[ len ] = separator;
             result[ len + 1 ] = '\0';
-            }
-            else
-            {
-               fprintf( stderr, "Błąd: Ścieżka przekracza dopuszczalny rozmiar bufora. \n" );
-            }
-        }
+         }
+         else
+         {
+            fprintf( stderr, "Error: Path exceeds the allowed buffer size. \n" );
+         }
+      }
 
       return result;
    }
@@ -164,7 +185,7 @@ struct tm ConvertSystemTimeToTm( const SYSTEMTIME *st )
    struct tm tm;
    memset( &tm, 0, sizeof( tm ) );
    tm.tm_year = st->wYear - 1900; // Years since 1900
-   tm.tm_mon  = st->wMonth -1;   // The months are from 0 to 11
+   tm.tm_mon  = st->wMonth - 1;   // The months are from 0 to 11
    tm.tm_mday = st->wDay;
    tm.tm_hour = st->wHour;
    tm.tm_min  = st->wMinute;
@@ -177,7 +198,7 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
 {
    FileInfo *pFiles = NULL;
    int count = 0;
-   int parentIndex = -1;
+   int parentIndex = - 1;
 
    #if defined( _WIN32 ) || defined( _WIN64 )
       WIN32_FIND_DATA findFileData;
@@ -304,7 +325,7 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
 
          char fullPath[ 512 ];
          snprintf( fullPath, sizeof( fullPath ), "%s/%s", currentDir, entry->d_name );
-         if( stat( fullPath, &fileInfo ) == -1 )
+         if( stat( fullPath, &fileInfo ) == - 1 )
          {
             continue;
          }
@@ -318,8 +339,8 @@ FileInfo *gtDirectory( const char *currentDir, int *size )
 
          pFiles[ count ].state = F;
 
-         strncpy( pFiles[ count ].name, entry->d_name, sizeof( pFiles[ count ].name ) -1 );
-         pFiles[ count ].name[ sizeof( pFiles[ count ].name ) -1 ] = '\0';
+         strncpy( pFiles[ count ].name, entry->d_name, sizeof( pFiles[ count ].name ) - 1 );
+         pFiles[ count ].name[ sizeof( pFiles[ count ].name ) - 1 ] = '\0';
 
          snprintf( pFiles[ count ].size, sizeof( pFiles[ count ].size ), "%ld", fileInfo.st_size );
 

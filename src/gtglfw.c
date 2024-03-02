@@ -37,12 +37,12 @@ static void key_callback( GLFWwindow *window, int key, int scancode, int action,
    pApp->keyMods     = mods;
 }
 
-static void char_callback( GLFWwindow* window, unsigned int codepoint )
+static void char_callback( GLFWwindow *window, unsigned int codepoint )
 {
    App *pApp = glfwGetWindowUserPointer( window );
 
    char string[ 5 ] = "";
-   encode_utf8( string, codepoint );
+   gt_utf8_encode( string, codepoint );
 
    strcpy( pApp->keyChar, string );
 }
@@ -98,7 +98,7 @@ static void set_clear_color_from_hex( unsigned int hexColor )
 
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 // internal
-void check_open_gl_error( const char *stmt, const char *fname, int line, GLenum *errCode )
+void gt_check_open_gl_error( const char *stmt, const char *fname, int line, GLenum *errCode )
 {
    GLenum err = glGetError();
    if( err != GL_NO_ERROR )
@@ -112,7 +112,7 @@ void check_open_gl_error( const char *stmt, const char *fname, int line, GLenum 
    }
 }
 
-void set_color_from_hex( unsigned int hexColor )
+void gt_set_color_from_hex( unsigned int hexColor )
 {
    if( ( hexColor <= 0xffffff ) )
    {
@@ -137,7 +137,7 @@ void set_color_from_hex( unsigned int hexColor )
    }
 }
 
-unsigned int convert_hex_to_int( const char *hex )
+unsigned int gt_convert_hex_to_int( const char *hex )
 {
    return ( unsigned int ) strtol( hex, NULL, 16 );
 }
@@ -153,66 +153,101 @@ char *gt_strdup( const char *str )
    return new_str;
 }
 
-size_t strlen_utf8( const char* str )
+const char *gt_utf8_offset_to_pointer( const char *str, int character_offset )
+{
+   const char *s = str;
+   mbstate_t state = { 0 };
+
+   while( character_offset > 0 && *s )
+   {
+      wchar_t wc;
+      size_t bytes = mbrtowc( &wc, s, MB_CUR_MAX, &state );
+      if( bytes == ( size_t ) -1 || bytes == ( size_t ) -2 )
+      {
+         // Invalid or incomplete character, skip it
+         s++;
+      }
+      else
+      {
+         character_offset--;
+         s += bytes;
+      }
+   }
+
+   return s;
+}
+
+size_t gt_utf8_encode( char *str, unsigned int code_point )
+{
+   size_t count = 0;
+
+   if( code_point < 0x80 )
+      str[ count++ ] = ( char )code_point;
+   else if( code_point < 0x800 )
+   {
+      str[ count++ ] = ( code_point >> 6 ) | 0xc0;
+      str[ count++ ] = ( code_point & 0x3f ) | 0x80;
+   }
+   else if( code_point < 0x10000 )
+   {
+      str[ count++ ] = ( code_point >> 12 ) | 0xe0;
+      str[ count++ ] = ( ( code_point >> 6 ) & 0x3f ) | 0x80;
+      str[ count++ ] = ( code_point & 0x3f ) | 0x80;
+   }
+   else if( code_point < 0x110000 )
+   {
+      str[ count++ ] = ( code_point >> 18 ) | 0xf0;
+      str[ count++ ] = ( ( code_point >> 12 ) & 0x3f ) | 0x80;
+      str[ count++ ] = ( ( code_point >> 6 ) & 0x3f ) | 0x80;
+      str[ count++ ] = ( code_point & 0x3f ) | 0x80;
+   }
+
+   return count;
+}
+
+size_t gt_utf8_strlen_single_byte( const char *str )
 {
    size_t len = 0;
    unsigned char c;
 
    while( ( c = ( unsigned char ) *str++ ) )
    {
-      if( ( c & 0xc0 ) != 0x80 )
-         len++;
+      if( ( c & 0xc0 ) != 0x80 ) len++;
    }
 
    return len;
 }
 
-const char *utf8_offset_to_pointer( const char *str, int offset )
+size_t gt_utf8_strlen_multibyte( const char *str )
 {
-   const char *s = str;
-   while( offset > 0 && *s )
+   size_t len = 0;
+   mbstate_t state = { 0 };
+
+   while( *str )
    {
-      if( ( *s & 0xc0 ) != 0x80 )
+      wchar_t wc;
+      size_t bytes = mbrtowc( &wc, str, MB_CUR_MAX, &state );
+      if( bytes == ( size_t ) -1 || bytes == ( size_t ) -2 )
       {
-         offset--;
+         // Invalid or incomplete character, skip it
+         str++;
       }
-      s++;
-   }
-   return s;
-}
-
-size_t encode_utf8( char* s, unsigned int ch )
-{
-   size_t count = 0;
-
-   if( ch < 0x80 )
-      s[ count++ ] = ( char ) ch;
-   else if( ch < 0x800 )
-   {
-      s[ count++ ] = ( ch >> 6 ) | 0xc0;
-      s[ count++ ] = ( ch & 0x3f ) | 0x80;
-   }
-   else if( ch < 0x10000 )
-   {
-      s[ count++ ] = ( ch >> 12) | 0xe0;
-      s[ count++ ] = ( ( ch >> 6 ) & 0x3f) | 0x80;
-      s[ count++ ] = ( ch & 0x3f ) | 0x80;
-   }
-   else if( ch < 0x110000 )
-   {
-      s[ count++ ] = ( ch >> 18) | 0xf0;
-      s[ count++ ] = ( ( ch >> 12 ) & 0x3f ) | 0x80;
-      s[ count++ ] = ( ( ch >> 6 ) & 0x3f ) | 0x80;
-      s[ count++ ] = ( ch & 0x3f) | 0x80;
+      else
+      {
+         len++;
+         str += bytes;
+      }
    }
 
-   return count;
+   return len;
 }
 
 /* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 // API functions
 App *gtCreateWindow( int width, int height, const char *title )
 {
+   setlocale( LC_ALL, "" );
+
    if( ! glfwInit() )
    {
       exit( EXIT_FAILURE );
@@ -305,7 +340,7 @@ void gtBeginDrawing( App *pApp )
 
 void gtEndDrawing( const App *pApp )
 {
-   REPORT_OPENGL_ERROR( "End drawing: " );
+   // REPORT_OPENGL_ERROR( "End drawing: " );
    glfwSwapBuffers( pApp->window );
 }
 
